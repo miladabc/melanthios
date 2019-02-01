@@ -1,0 +1,17 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t miladdarren/client-test -f Dockerfile.dev .
+
+script:
+  - docker run miladdarren/client-test npm run test -- --coverage
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: $HEROKU_TOKEN
+  app: melanthios
+  on:
+    branch: master
