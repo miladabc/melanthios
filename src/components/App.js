@@ -1,21 +1,34 @@
 import React, { Component } from 'react';
-import ReactNotification from 'react-notifications-component';
+import { BrowserRouter, Route } from 'react-router-dom';
+import Notification from './Notification';
 import 'react-notifications-component/dist/theme.css';
 
 import Header from './Header';
+import Home from './Home';
+import Signup from './auth/Signup';
+import Signin from './auth/Signin';
+import Signout from './auth/Signout';
+import ResendEmail from './auth/ResendEmail';
+import EmailConfirmation from './auth/EmailConfirmation';
+import Feature from './Feature';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.notificationDOMRef = React.createRef();
-  }
-
   render() {
     return (
       <div>
-        <ReactNotification ref={this.notificationDOMRef} />
-        <Header />
-        {this.props.children}
+        <BrowserRouter>
+          <div>
+            <Notification />
+            <Header />
+            <Route exact path="/" component={Home} />
+            <Route exact path="/signup" component={Signup} />
+            <Route exact path="/signin" component={Signin} />
+            <Route exact path="/signout" component={Signout} />
+            <Route exact path="/resendemail" component={ResendEmail} />
+            <Route exact path="/confirmemail" component={EmailConfirmation} />
+            <Route exact path="/feature" component={Feature} />
+          </div>
+        </BrowserRouter>
       </div>
     );
   }

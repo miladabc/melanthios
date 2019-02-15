@@ -3,39 +3,18 @@ import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import queryString from 'query-string';
-import ReactNotification from 'react-notifications-component';
 import { Link } from 'react-router-dom';
 
-import { verifyEmail } from '../../actions';
+import { addNotification } from '../../actions';
+import { verifyEmail } from '../../utils/authUtils';
 
 class EmailConfirmation extends Component {
-  constructor(props) {
-    super(props);
-    this.notificationDOMRef = React.createRef();
-  }
-
   onSubmit = formProps => {
-    this.props.verifyEmail(
+    verifyEmail(
       formProps,
-      () => {
-        this.props.history.push('/signin');
-      },
-      this.showNotification
+      () => this.props.history.push('/signin'),
+      this.props.addNotification
     );
-  };
-
-  showNotification = ({ title, message, type }) => {
-    this.notificationDOMRef.current.addNotification({
-      title,
-      message,
-      type,
-      insert: 'top',
-      container: 'top-right',
-      animationIn: ['animated', 'bounceIn'],
-      animationOut: ['animated', 'bounceOut'],
-      dismiss: { duration: 5000 },
-      dismissable: { click: true }
-    });
   };
 
   renderField = ({ input, label, type, meta: { touched, error } }) => {
@@ -63,7 +42,6 @@ class EmailConfirmation extends Component {
 
     return (
       <div className="limiter">
-        <ReactNotification ref={this.notificationDOMRef} />
         <div className="container-login100">
           <div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
             <form
@@ -115,7 +93,7 @@ const validate = ({ token }) => {
 export default compose(
   connect(
     null,
-    { verifyEmail }
+    { addNotification }
   ),
   reduxForm({ form: 'confirmEmail', validate })
 )(EmailConfirmation);

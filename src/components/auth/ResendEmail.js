@@ -2,32 +2,13 @@ import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import ReactNotification from 'react-notifications-component';
 
-import { resendEmail } from '../../actions';
+import { addNotification } from '../../actions';
+import { resendEmail } from '../../utils/authUtils';
 
 class Signin extends Component {
-  constructor(props) {
-    super(props);
-    this.notificationDOMRef = React.createRef();
-  }
-
   onSubmit = formProps => {
-    this.props.resendEmail(formProps, this.showNotification);
-  };
-
-  showNotification = ({ title, message, type }) => {
-    this.notificationDOMRef.current.addNotification({
-      title,
-      message,
-      type,
-      insert: 'top',
-      container: 'top-right',
-      animationIn: ['animated', 'bounceIn'],
-      animationOut: ['animated', 'bounceOut'],
-      dismiss: { duration: 5000 },
-      dismissable: { click: true }
-    });
+    resendEmail(formProps, this.props.addNotification);
   };
 
   renderField({ input, label, type, meta: { touched, error } }) {
@@ -50,7 +31,6 @@ class Signin extends Component {
 
     return (
       <div className="limiter">
-        <ReactNotification ref={this.notificationDOMRef} />
         <div className="container-login100">
           <div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
             <form
@@ -94,7 +74,7 @@ const validate = ({ email }) => {
 export default compose(
   connect(
     null,
-    { resendEmail }
+    { addNotification }
   ),
   reduxForm({ form: 'resendEmail', validate })
 )(Signin);

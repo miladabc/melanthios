@@ -1,28 +1,22 @@
 import axios from 'axios';
 
-import { AUTH_USER } from './types';
-import { API_URI } from '../config';
+import { AUTH_USER, ADD_NOTIFICATION } from './types';
 
-export const signup = (formProps, showNot) => dispatch => {
-  axios
-    .post(`${API_URI}/auth/signup`, formProps)
-    .then(res =>
-      showNot({
-        title: 'Success',
-        message: res.data.msg,
-        type: 'success'
-      })
-    )
-    .catch(err =>
-      showNot({
-        title: 'Error',
-        message: err.response.data.msg,
-        type: 'danger'
-      })
-    );
+const API_URI = process.env.REACT_APP_API_URI;
+
+const addNotification = ({ success, msg: message }) => {
+  const title = success ? 'Success' : 'Error';
+  const notType = success ? 'success' : 'danger';
+
+  return {
+    type: ADD_NOTIFICATION,
+    title,
+    message,
+    notType
+  };
 };
 
-export const signin = (formProps, redirect, showNot) => dispatch => {
+const signin = (formProps, redirect, addNot) => dispatch => {
   axios
     .post(`${API_URI}/auth/signin`, formProps)
     .then(res => {
@@ -30,16 +24,12 @@ export const signin = (formProps, redirect, showNot) => dispatch => {
       localStorage.setItem('token', res.data.token);
       redirect();
     })
-    .catch(err =>
-      showNot({
-        title: 'Error',
-        message: err.response.data.msg,
-        type: 'danger'
-      })
-    );
+    .catch(err => {
+      addNot(err.response.data);
+    });
 };
 
-export const googleOAuth = (googleResponse, redirect, showNot) => dispatch => {
+const googleOAuth = (googleResponse, redirect, addNot) => dispatch => {
   axios
     .post(`${API_URI}/auth/google`, {
       access_token: googleResponse.accessToken
@@ -51,16 +41,12 @@ export const googleOAuth = (googleResponse, redirect, showNot) => dispatch => {
         redirect();
       }
     })
-    .catch(err =>
-      showNot({
-        title: 'Error',
-        message: 'Could not authenticate with google',
-        type: 'danger'
-      })
+    .catch(() =>
+      addNot({ success: false, msg: 'Could not authenticate with google' })
     );
 };
 
-export const signout = () => {
+const signout = () => {
   localStorage.removeItem('token');
 
   return {
@@ -69,36 +55,4 @@ export const signout = () => {
   };
 };
 
-export const resendEmail = (formProps, showNot) => dispatch => {
-  axios
-    .post(`${API_URI}/auth/resend`, formProps)
-    .then(res =>
-      showNot({
-        title: 'Success',
-        message: res.data.msg,
-        type: 'success'
-      })
-    )
-    .catch(err =>
-      showNot({
-        title: 'Error',
-        message: err.response.data.msg,
-        type: 'danger'
-      })
-    );
-};
-
-export const verifyEmail = (formProps, redirect, showNot) => dispatch => {
-  axios
-    .post(`${API_URI}/auth/confirmation`, formProps)
-    .then(res => {
-      redirect();
-    })
-    .catch(err =>
-      showNot({
-        title: 'Error',
-        message: err.response.data.msg,
-        type: 'danger'
-      })
-    );
-};
+export { addNotification, signin, googleOAuth, signout };

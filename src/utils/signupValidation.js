@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import { API_URI } from '../config';
+const API_URI = process.env.REACT_APP_API_URI;
 
-export const validate = values => {
+const validate = values => {
   const {
     firstName,
     lastName,
@@ -47,7 +47,7 @@ export const validate = values => {
   return errors;
 };
 
-export const asyncValidate = ({ username, email }) => {
+const asyncValidate = ({ username, email }) => {
   return axios
     .post(`${API_URI}/auth/isitavailable`, {
       username,
@@ -68,3 +68,5 @@ export const asyncValidate = ({ username, email }) => {
       }
     });
 };
+
+export { validate, asyncValidate };
