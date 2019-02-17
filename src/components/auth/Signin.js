@@ -7,18 +7,33 @@ import { Link } from 'react-router-dom';
 import { signin, addNotification } from '../../actions';
 import GoogleOAuth from './GoogleOAuth';
 
+const FIELDS = [
+  { label: 'Email or Username', type: 'text', name: 'emailOrUsername' },
+  { label: 'Password', type: 'password', name: 'password' }
+];
+
 class Signin extends Component {
+  state = { isHidden: false };
+
   onSubmit = formProps => {
+    this.toggleVisibility();
     this.props.signin(
       formProps,
       () => {
         this.props.history.push('/feature');
       },
-      this.props.addNotification
+      this.props.addNotification,
+      this.toggleVisibility
     );
   };
 
-  renderField({ input, label, type, meta: { touched, error } }) {
+  toggleVisibility = () => {
+    this.setState({
+      isHidden: !this.state.isHidden
+    });
+  };
+
+  signinField({ input, label, type, meta: { touched, error } }) {
     return (
       <fieldset>
         <div className="p-t-31 p-b-9">
@@ -31,6 +46,20 @@ class Signin extends Component {
         {touched && error && <span className="text-danger">{error}</span>}
       </fieldset>
     );
+  }
+
+  renderFields() {
+    return FIELDS.map(({ label, type, name }) => {
+      return (
+        <Field
+          key={name}
+          label={label}
+          type={type}
+          name={name}
+          component={this.signinField}
+        />
+      );
+    });
   }
 
   render() {
@@ -53,24 +82,22 @@ class Signin extends Component {
                 Facebook
               </a>
 
-              <Field
-                name="emailOrUsername"
-                type="text"
-                component={this.renderField}
-                label="Email or Username"
-              />
-
-              <Field
-                name="password"
-                type="password"
-                component={this.renderField}
-                label="Password"
-              />
+              {this.renderFields()}
 
               <div className="container-login100-form-btn m-t-17">
-                <button className="login100-form-btn" disabled={submitting}>
-                  Sign In
-                </button>
+                {!this.state.isHidden ? (
+                  <button className="login100-form-btn" disabled={submitting}>
+                    Sign In
+                  </button>
+                ) : (
+                  <img
+                    src="/images/loading.svg"
+                    height="120"
+                    width="120"
+                    style={{ marginLeft: 'auto', marginRight: 'auto' }}
+                    alt=""
+                  />
+                )}
               </div>
 
               <div className="w-full text-center p-t-55">

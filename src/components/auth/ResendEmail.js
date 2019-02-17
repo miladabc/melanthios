@@ -7,9 +7,60 @@ import { addNotification } from '../../actions';
 import { resendEmail } from '../../utils/authUtils';
 
 class Signin extends Component {
+  state = { isHidden: false, isDisabled: false };
+
   onSubmit = formProps => {
-    resendEmail(formProps, this.props.addNotification);
+    this.toggleVisibility();
+    resendEmail(
+      formProps,
+      this.props.addNotification,
+      this.toggleVisibility,
+      this.toggleDisablity
+    );
   };
+
+  toggleVisibility = () => {
+    this.setState({
+      isHidden: !this.state.isHidden
+    });
+  };
+
+  toggleDisablity = () => {
+    this.setState({
+      isDisabled: true
+    });
+
+    const button = document.getElementById('button');
+    button.style.visibility = 'hidden';
+
+    this.timer();
+    setTimeout(() => {
+      button.style.visibility = 'visible';
+      this.setState({ isDisabled: false });
+    }, 30000);
+  };
+
+  timer() {
+    const countDownDate = new Date();
+    countDownDate.setSeconds(countDownDate.getSeconds() + 30);
+
+    const timer = setInterval(() => {
+      let now = new Date().getTime();
+
+      let distance = countDownDate - now;
+
+      let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById(
+        'remaining'
+      ).innerHTML = `Try again in ${seconds} seconds`;
+
+      if (distance < 0) {
+        clearInterval(timer);
+        document.getElementById('remaining').innerHTML = '';
+      }
+    }, 100);
+  }
 
   renderField({ input, label, type, meta: { touched, error } }) {
     return (
@@ -27,7 +78,7 @@ class Signin extends Component {
   }
 
   render() {
-    const { handleSubmit, submitting } = this.props;
+    const { handleSubmit } = this.props;
 
     return (
       <div className="limiter">
@@ -48,10 +99,31 @@ class Signin extends Component {
                 label="Email"
               />
 
-              <div className="container-login100-form-btn m-t-17">
-                <button className="login100-form-btn" disabled={submitting}>
-                  Send verification email
-                </button>
+              <span
+                id="remaining"
+                className="text-danger"
+                style={{ marginLeft: '120px', marginTop: '10px' }}
+              />
+
+              <div id="button" className="container-login100-form-btn m-t-17">
+                {!this.state.isHidden && (
+                  <button
+                    className="login100-form-btn"
+                    disabled={this.state.isDisabled}
+                  >
+                    Send verification email
+                  </button>
+                )}
+
+                {this.state.isHidden && (
+                  <img
+                    src="/images/loading.svg"
+                    height="120"
+                    width="120"
+                    style={{ marginLeft: 'auto', marginRight: 'auto' }}
+                    alt=""
+                  />
+                )}
               </div>
             </form>
           </div>

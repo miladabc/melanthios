@@ -9,12 +9,22 @@ import { addNotification } from '../../actions';
 import { verifyEmail } from '../../utils/authUtils';
 
 class EmailConfirmation extends Component {
+  state = { isHidden: false };
+
   onSubmit = formProps => {
+    this.toggleVisibility();
     verifyEmail(
       formProps,
       () => this.props.history.push('/signin'),
-      this.props.addNotification
+      this.props.addNotification,
+      this.toggleVisibility
     );
+  };
+
+  toggleVisibility = () => {
+    this.setState({
+      isHidden: !this.state.isHidden
+    });
   };
 
   renderField = ({ input, label, type, meta: { touched, error } }) => {
@@ -60,9 +70,19 @@ class EmailConfirmation extends Component {
               />
 
               <div className="container-login100-form-btn m-t-17">
-                <button className="login100-form-btn" disabled={submitting}>
-                  Verify Your Email
-                </button>
+                {!this.state.isHidden ? (
+                  <button className="login100-form-btn" disabled={submitting}>
+                    Verify Your Email
+                  </button>
+                ) : (
+                  <img
+                    src="/images/loading.svg"
+                    height="120"
+                    width="120"
+                    style={{ marginLeft: 'auto', marginRight: 'auto' }}
+                    alt=""
+                  />
+                )}
               </div>
 
               <div className="w-full text-center p-t-55">

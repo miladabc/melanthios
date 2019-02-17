@@ -16,7 +16,7 @@ const addNotification = ({ success, msg: message }) => {
   };
 };
 
-const signin = (formProps, redirect, addNot) => dispatch => {
+const signin = (formProps, redirect, addNot, toggleVisibility) => dispatch => {
   axios
     .post(`${API_URI}/auth/signin`, formProps)
     .then(res => {
@@ -25,6 +25,7 @@ const signin = (formProps, redirect, addNot) => dispatch => {
       redirect();
     })
     .catch(err => {
+      toggleVisibility();
       addNot(err.response.data);
     });
 };

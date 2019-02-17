@@ -9,12 +9,30 @@ import GoogleOAuth from './GoogleOAuth';
 import { signup } from '../../utils/authUtils';
 import { validate, asyncValidate } from '../../utils/signupValidation';
 
+const FIELDS = [
+  { label: 'First Name', type: 'text', name: 'firstName' },
+  { label: 'Last Name', type: 'text', name: 'lastName' },
+  { label: 'Username', type: 'text', name: 'username' },
+  { label: 'Email', type: 'email', name: 'email' },
+  { label: 'Password', type: 'password', name: 'password' },
+  { label: 'Confirm Password', type: 'password', name: 'confirmPassword' }
+];
+
 class Signup extends Component {
+  state = { isHidden: false };
+
   onSubmit = formProps => {
-    signup(formProps, this.props.addNotification);
+    this.toggleVisibility();
+    signup(formProps, this.props.addNotification, this.toggleVisibility);
   };
 
-  renderField({
+  toggleVisibility = () => {
+    this.setState({
+      isHidden: !this.state.isHidden
+    });
+  };
+
+  signupField({
     input,
     label,
     type,
@@ -38,6 +56,20 @@ class Signup extends Component {
     );
   }
 
+  renderFields() {
+    return FIELDS.map(({ label, type, name }) => {
+      return (
+        <Field
+          key={name}
+          label={label}
+          type={type}
+          name={name}
+          component={this.signupField}
+        />
+      );
+    });
+  }
+
   render() {
     const { handleSubmit, submitting } = this.props;
 
@@ -58,52 +90,22 @@ class Signup extends Component {
                 Facebook
               </a>
 
-              <Field
-                name="firstName"
-                type="text"
-                component={this.renderField}
-                label="First Name"
-              />
-
-              <Field
-                name="lastName"
-                type="text"
-                component={this.renderField}
-                label="Last Name"
-              />
-
-              <Field
-                name="username"
-                type="text"
-                component={this.renderField}
-                label="Username"
-              />
-
-              <Field
-                name="email"
-                type="email"
-                component={this.renderField}
-                label="Email"
-              />
-
-              <Field
-                name="password"
-                type="password"
-                component={this.renderField}
-                label="Password"
-              />
-
-              <Field
-                name="confirmPassword"
-                type="password"
-                component={this.renderField}
-                label="Confirm Password"
-              />
+              {this.renderFields()}
 
               <div className="container-login100-form-btn m-t-17">
-                <button className="login100-form-btn" disabled={submitting}>
-                  Sign Up
-                </button>
+                {!this.state.isHidden ? (
+                  <button className="login100-form-btn" disabled={submitting}>
+                    Sign Up
+                  </button>
+                ) : (
+                  <img
+                    src="/images/loading.svg"
+                    height="120"
+                    width="120"
+                    style={{ marginLeft: 'auto', marginRight: 'auto' }}
+                    alt=""
+                  />
+                )}
               </div>
 
               <div className="w-full text-center p-t-55">
