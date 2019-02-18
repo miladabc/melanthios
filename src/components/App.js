@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import Notification from './Notification';
-import 'react-notifications-component/dist/theme.css';
 
+import 'react-notifications-component/dist/theme.css';
+import Notification from './Notification';
 import Header from './Header';
 import Home from './Home';
 import Signup from './auth/Signup';
