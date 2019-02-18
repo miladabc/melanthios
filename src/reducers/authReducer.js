@@ -1,13 +1,19 @@
 import { AUTH_USER } from '../actions/types';
+import { decodeAuthToken } from '../utils/authUtils';
 
-const INITIAL_STATE = {
-  authenticated: ''
-};
-
-export default function(state = INITIAL_STATE, action) {
+export default function(
+  state = {
+    authenticated: '',
+    user: null
+  },
+  action
+) {
   switch (action.type) {
     case AUTH_USER:
-      return { ...state, authenticated: action.payload };
+      return {
+        authenticated: action.payload,
+        user: decodeAuthToken(action.payload)
+      };
     default:
       return state;
   }

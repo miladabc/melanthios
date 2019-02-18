@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import { signout } from '../actions';
+
 class Header extends Component {
   renderLinks() {
     if (this.props.authenticated) {
@@ -20,16 +22,20 @@ class Header extends Component {
               aria-haspopup="true"
               aria-expanded="false"
             >
-              User
+              {this.props.user.username}
             </button>
             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
               <Link className="dropdown-item" to="/">
                 Profile
               </Link>
               <div className="dropdown-divider" />
-              <Link className="dropdown-item" to="/signout">
+              <span
+                className="dropdown-item"
+                style={{ cursor: 'pointer' }}
+                onClick={this.props.signout}
+              >
                 Sign out
-              </Link>
+              </span>
             </div>
           </li>
         </>
@@ -91,6 +97,12 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = state => ({ authenticated: state.auth.authenticated });
+const mapStateToProps = state => ({
+  authenticated: state.auth.authenticated,
+  user: state.auth.user
+});
 
-export default connect(mapStateToProps)(Header);
+export default connect(
+  mapStateToProps,
+  { signout }
+)(Header);

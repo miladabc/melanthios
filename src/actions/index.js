@@ -2,8 +2,6 @@ import axios from 'axios';
 
 import { AUTH_USER, ADD_NOTIFICATION } from './types';
 
-const API_URI = process.env.REACT_APP_API_URI;
-
 const addNotification = ({ success, msg: message }) => {
   const title = success ? 'Success' : 'Error';
   const notType = success ? 'success' : 'danger';
@@ -18,7 +16,7 @@ const addNotification = ({ success, msg: message }) => {
 
 const signin = (formProps, redirect, addNot, toggleVisibility) => dispatch => {
   axios
-    .post(`${API_URI}/auth/signin`, formProps)
+    .post('/auth/signin', formProps)
     .then(res => {
       dispatch({ type: AUTH_USER, payload: res.data.token });
       localStorage.setItem('token', res.data.token);
@@ -32,7 +30,7 @@ const signin = (formProps, redirect, addNot, toggleVisibility) => dispatch => {
 
 const googleOAuth = (googleResponse, redirect, addNot) => dispatch => {
   axios
-    .post(`${API_URI}/auth/google`, {
+    .post('/auth/google', {
       access_token: googleResponse.accessToken
     })
     .then(res => {

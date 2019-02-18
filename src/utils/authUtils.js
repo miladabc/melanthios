@@ -1,10 +1,9 @@
 import axios from 'axios';
-
-const API_URI = process.env.REACT_APP_API_URI;
+import jwtDecode from 'jwt-decode';
 
 const signup = (formProps, addNot, toggleVisibility) => {
   axios
-    .post(`${API_URI}/auth/signup`, formProps)
+    .post('/auth/signup', formProps)
     .then(res => addNot(res.data))
     .catch(err => addNot(err.response.data))
     .finally(() => toggleVisibility());
@@ -12,7 +11,7 @@ const signup = (formProps, addNot, toggleVisibility) => {
 
 const resendEmail = (formProps, addNot, toggleVisibility, toggleDisablity) => {
   axios
-    .post(`${API_URI}/auth/resend`, formProps)
+    .post('/auth/resend', formProps)
     .then(res => {
       addNot(res.data);
       toggleDisablity();
@@ -23,7 +22,7 @@ const resendEmail = (formProps, addNot, toggleVisibility, toggleDisablity) => {
 
 const verifyEmail = (formProps, redirect, addNot, toggleVisibility) => {
   axios
-    .post(`${API_URI}/auth/confirmation`, formProps)
+    .post('/auth/confirmation', formProps)
     .then(res => {
       addNot(res.data);
       redirect();
@@ -32,4 +31,13 @@ const verifyEmail = (formProps, redirect, addNot, toggleVisibility) => {
     .finally(() => toggleVisibility());
 };
 
-export { signup, resendEmail, verifyEmail };
+const decodeAuthToken = token => {
+  try {
+    const jwt = token || localStorage.getItem('token');
+    return jwtDecode(jwt);
+  } catch (err) {
+    return null;
+  }
+};
+
+export { signup, resendEmail, verifyEmail, decodeAuthToken };
