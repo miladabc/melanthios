@@ -2,21 +2,24 @@ import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import queryString from 'query-string';
 
 import { addNotification } from '../../actions';
-import { resendEmail } from '../../utils/authUtils';
-import timer from '../../utils/timer';
+import { resetPassword } from '../../utils/authUtils';
 
-class ResendEmail extends Component {
+class ResetPassword extends Component {
   state = { isHidden: false, isDisabled: false };
 
   onSubmit = formProps => {
     this.toggleVisibility();
-    resendEmail(
-      formProps,
+    resetPassword(
+      {
+        ...formProps,
+        token: queryString.parse(this.props.location.search).token
+      },
+      () => this.props.history.push('/signin'),
       this.props.addNotification,
-      this.toggleVisibility,
-      this.toggleDisablity
+      this.toggleVisibility
     );
   };
 
@@ -24,21 +27,6 @@ class ResendEmail extends Component {
     this.setState({
       isHidden: !this.state.isHidden
     });
-  };
-
-  toggleDisablity = () => {
-    this.setState({
-      isDisabled: true
-    });
-
-    const button = document.getElementById('button');
-    button.style.visibility = 'hidden';
-
-    timer();
-    setTimeout(() => {
-      button.style.visibility = 'visible';
-      this.setState({ isDisabled: false });
-    }, 30000);
   };
 
   renderField({ input, label, type, meta: { touched, error } }) {
@@ -67,34 +55,26 @@ class ResendEmail extends Component {
               className="login100-form validate-form flex-sb flex-w"
               onSubmit={handleSubmit(this.onSubmit)}
             >
-              <span className="login100-form-title p-b-53">
-                Resend verification
-              </span>
+              <span className="login100-form-title p-b-53">Reset Password</span>
 
               <Field
-                name="email"
-                type="email"
+                name="password"
+                type="password"
                 component={this.renderField}
-                label="Email"
+                label="New Password"
               />
 
-              <span
-                id="remaining"
-                className="text-danger"
-                style={{ marginLeft: '120px', marginTop: '10px' }}
+              <Field
+                name="confirmPassword"
+                type="password"
+                component={this.renderField}
+                label="Confirm New Password"
               />
 
               <div id="button" className="container-login100-form-btn m-t-17">
-                {!this.state.isHidden && (
-                  <button
-                    className="login100-form-btn"
-                    disabled={this.state.isDisabled}
-                  >
-                    Send verification email
-                  </button>
-                )}
-
-                {this.state.isHidden && (
+                {!this.state.isHidden ? (
+                  <button className="login100-form-btn">Reset Password</button>
+                ) : (
                   <img
                     src="/images/loading.svg"
                     height="120"
@@ -112,12 +92,19 @@ class ResendEmail extends Component {
   }
 }
 
-const validate = ({ email }) => {
+const validate = ({ password, confirmPassword }) => {
   const errors = {};
 
-  if (!email) {
-    errors.email = `Required`;
+  if (!password) {
+    errors.password = `Required`;
   }
+
+  if (!confirmPassword) {
+    errors.confirmPassword = `Required`;
+  }
+
+  if (password !== confirmPassword)
+    errors.confirmPassword = 'Passwords does not match';
 
   return errors;
 };
@@ -127,5 +114,5 @@ export default compose(
     null,
     { addNotification }
   ),
-  reduxForm({ form: 'resendEmail', validate })
-)(ResendEmail);
+  reduxForm({ form: 'resetPassword', validate })
+)(ResetPassword);

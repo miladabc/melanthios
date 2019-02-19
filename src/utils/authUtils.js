@@ -40,4 +40,38 @@ const decodeAuthToken = token => {
   }
 };
 
-export { signup, resendEmail, verifyEmail, decodeAuthToken };
+const forgotPassword = (
+  formProps,
+  addNot,
+  toggleVisibility,
+  toggleDisablity
+) => {
+  axios
+    .post('/auth/forgotpass', formProps)
+    .then(res => {
+      addNot(res.data);
+      toggleDisablity();
+    })
+    .catch(err => addNot(err.response.data))
+    .finally(() => toggleVisibility());
+};
+
+const resetPassword = (formProps, redirect, addNot, toggleVisibility) => {
+  axios
+    .post('/auth/resetpass', formProps)
+    .then(res => {
+      addNot(res.data);
+      redirect();
+    })
+    .catch(err => addNot(err.response.data))
+    .finally(() => toggleVisibility());
+};
+
+export {
+  signup,
+  resendEmail,
+  verifyEmail,
+  decodeAuthToken,
+  forgotPassword,
+  resetPassword
+};

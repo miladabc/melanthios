@@ -9,6 +9,8 @@ import Signup from './auth/Signup';
 import Signin from './auth/Signin';
 import ResendEmail from './auth/ResendEmail';
 import EmailConfirmation from './auth/EmailConfirmation';
+import ForgotPassword from './auth/ForgotPassword';
+import ResetPassword from './auth/ResetPassword';
 import Feature from './Feature';
 
 class App extends Component {
@@ -24,6 +26,8 @@ class App extends Component {
             <Route exact path="/signin" component={Signin} />
             <Route exact path="/resendemail" component={ResendEmail} />
             <Route exact path="/confirmemail" component={EmailConfirmation} />
+            <Route exact path="/forgotpass" component={ForgotPassword} />
+            <Route exact path="/resetpass" component={ResetPassword} />
             <Route exact path="/feature" component={Feature} />
           </div>
         </BrowserRouter>

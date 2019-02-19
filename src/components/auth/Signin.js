@@ -101,17 +101,25 @@ class Signin extends Component {
               </div>
 
               <div className="w-full text-center p-t-55">
-                <a href="/forgetpass" className="txt2 bo1 m-l-5">
-                  Forgot password?
-                </a>
-              </div>
+                <div className="txt2" style={{ marginBottom: '10px' }}>
+                  <Link className="txt2 bo1 m-l-5" to="/forgotpass">
+                    Forgot password?
+                  </Link>
+                </div>
 
-              <div className="w-full text-center p-t-55">
-                <span className="txt2">Not a member? </span>
+                <div className="txt2" style={{ marginBottom: '10px' }}>
+                  Resend verification email?{' '}
+                  <Link className="txt2 bo1" to="/resendemail">
+                    Resend
+                  </Link>
+                </div>
 
-                <Link className="txt2 bo1" to="/signup">
-                  Sign up now
-                </Link>
+                <div className="txt2">
+                  Not a member?{' '}
+                  <Link className="txt2 bo1" to="/signup">
+                    Sign up now
+                  </Link>
+                </div>
               </div>
             </form>
           </div>

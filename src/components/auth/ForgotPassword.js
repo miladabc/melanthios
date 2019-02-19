@@ -4,15 +4,15 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import { addNotification } from '../../actions';
-import { resendEmail } from '../../utils/authUtils';
+import { forgotPassword } from '../../utils/authUtils';
 import timer from '../../utils/timer';
 
-class ResendEmail extends Component {
+class ForgotPassword extends Component {
   state = { isHidden: false, isDisabled: false };
 
   onSubmit = formProps => {
     this.toggleVisibility();
-    resendEmail(
+    forgotPassword(
       formProps,
       this.props.addNotification,
       this.toggleVisibility,
@@ -68,14 +68,14 @@ class ResendEmail extends Component {
               onSubmit={handleSubmit(this.onSubmit)}
             >
               <span className="login100-form-title p-b-53">
-                Resend verification
+                Forgot Password?
               </span>
 
               <Field
-                name="email"
-                type="email"
+                name="emailOrUsername"
+                type="text"
                 component={this.renderField}
-                label="Email"
+                label="Your Email or Username"
               />
 
               <span
@@ -90,7 +90,7 @@ class ResendEmail extends Component {
                     className="login100-form-btn"
                     disabled={this.state.isDisabled}
                   >
-                    Send verification email
+                    Reset Password
                   </button>
                 )}
 
@@ -112,11 +112,11 @@ class ResendEmail extends Component {
   }
 }
 
-const validate = ({ email }) => {
+const validate = ({ emailOrUsername }) => {
   const errors = {};
 
-  if (!email) {
-    errors.email = `Required`;
+  if (!emailOrUsername) {
+    errors.emailOrUsername = `Required`;
   }
 
   return errors;
@@ -127,5 +127,5 @@ export default compose(
     null,
     { addNotification }
   ),
-  reduxForm({ form: 'resendEmail', validate })
-)(ResendEmail);
+  reduxForm({ form: 'forgotPassword', validate })
+)(ForgotPassword);
