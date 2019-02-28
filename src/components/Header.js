@@ -6,7 +6,7 @@ import { signout } from '../actions';
 
 class Header extends Component {
   renderLinks() {
-    if (this.props.authenticated) {
+    if (this.props.user) {
       return (
         <>
           <li className="nav-item">
@@ -25,7 +25,7 @@ class Header extends Component {
               {this.props.user.username}
             </button>
             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-              <Link className="dropdown-item" to="/">
+              <Link className="dropdown-item" to="/profile">
                 Profile
               </Link>
               <div className="dropdown-divider" />
@@ -97,10 +97,7 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  authenticated: state.auth.authenticated,
-  user: state.auth.user
-});
+const mapStateToProps = state => ({ user: state.auth.user });
 
 export default connect(
   mapStateToProps,

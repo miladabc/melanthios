@@ -2,19 +2,21 @@ import axios from 'axios';
 
 import { AUTH_USER, ADD_NOTIFICATION } from './types';
 
-const addNotification = ({ success, msg: message }) => {
-  const title = success ? 'Success' : 'Error';
-  const notType = success ? 'success' : 'danger';
+const addNotification = ({ success, msg: message }) => dispatch => {
+  if (message) {
+    const title = success ? 'Success' : 'Error';
+    const notType = success ? 'success' : 'danger';
 
-  return {
-    type: ADD_NOTIFICATION,
-    title,
-    message,
-    notType
-  };
+    dispatch({
+      type: ADD_NOTIFICATION,
+      title,
+      message,
+      notType
+    });
+  }
 };
 
-const signin = (formProps, redirect, addNot, toggleVisibility) => dispatch => {
+const signin = (formProps, redirect, toggleVisibility) => dispatch => {
   axios
     .post('/auth/signin', formProps)
     .then(res => {
@@ -22,10 +24,7 @@ const signin = (formProps, redirect, addNot, toggleVisibility) => dispatch => {
       localStorage.setItem('token', res.data.token);
       redirect();
     })
-    .catch(err => {
-      toggleVisibility();
-      addNot(err.response.data);
-    });
+    .catch(() => toggleVisibility());
 };
 
 const googleOAuth = (googleResponse, redirect, addNot) => dispatch => {
@@ -54,4 +53,15 @@ const signout = () => {
   };
 };
 
-export { addNotification, signin, googleOAuth, signout };
+const updateProfile = (formProps, redirect, toggleVisibility) => dispatch => {
+  axios
+    .patch('/user/profile', formProps)
+    .then(res => {
+      dispatch({ type: AUTH_USER, payload: res.data.token });
+      localStorage.setItem('token', res.data.token);
+      redirect();
+    })
+    .catch(() => toggleVisibility());
+};
+
+export { addNotification, signin, googleOAuth, signout, updateProfile };

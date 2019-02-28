@@ -4,7 +4,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { signin, addNotification } from '../../actions';
+import { signin } from '../../actions';
 import GoogleOAuth from './GoogleOAuth';
 
 const FIELDS = [
@@ -19,10 +19,7 @@ class Signin extends Component {
     this.toggleVisibility();
     this.props.signin(
       formProps,
-      () => {
-        this.props.history.push('/feature');
-      },
-      this.props.addNotification,
+      () => this.props.history.push('/feature'),
       this.toggleVisibility
     );
   };
@@ -145,7 +142,7 @@ const validate = values => {
 export default compose(
   connect(
     null,
-    { signin, addNotification }
+    { signin }
   ),
   reduxForm({ form: 'signin', validate })
 )(Signin);

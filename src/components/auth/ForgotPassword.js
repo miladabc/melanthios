@@ -1,44 +1,20 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
 
-import { addNotification } from '../../actions';
 import { forgotPassword } from '../../utils/authUtils';
-import timer from '../../utils/timer';
 
 class ForgotPassword extends Component {
   state = { isHidden: false, isDisabled: false };
 
   onSubmit = formProps => {
     this.toggleVisibility();
-    forgotPassword(
-      formProps,
-      this.props.addNotification,
-      this.toggleVisibility,
-      this.toggleDisablity
-    );
+    forgotPassword(formProps, this.toggleVisibility);
   };
 
   toggleVisibility = () => {
     this.setState({
       isHidden: !this.state.isHidden
     });
-  };
-
-  toggleDisablity = () => {
-    this.setState({
-      isDisabled: true
-    });
-
-    const button = document.getElementById('button');
-    button.style.visibility = 'hidden';
-
-    timer();
-    setTimeout(() => {
-      button.style.visibility = 'visible';
-      this.setState({ isDisabled: false });
-    }, 30000);
   };
 
   renderField({ input, label, type, meta: { touched, error } }) {
@@ -57,7 +33,7 @@ class ForgotPassword extends Component {
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, submitting } = this.props;
 
     return (
       <div className="limiter">
@@ -86,10 +62,7 @@ class ForgotPassword extends Component {
 
               <div id="button" className="container-login100-form-btn m-t-17">
                 {!this.state.isHidden && (
-                  <button
-                    className="login100-form-btn"
-                    disabled={this.state.isDisabled}
-                  >
+                  <button className="login100-form-btn" disabled={submitting}>
                     Reset Password
                   </button>
                 )}
@@ -122,10 +95,4 @@ const validate = ({ emailOrUsername }) => {
   return errors;
 };
 
-export default compose(
-  connect(
-    null,
-    { addNotification }
-  ),
-  reduxForm({ form: 'forgotPassword', validate })
-)(ForgotPassword);
+export default reduxForm({ form: 'forgotPassword', validate })(ForgotPassword);

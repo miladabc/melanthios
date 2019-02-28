@@ -1,69 +1,45 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
-const signup = (formProps, addNot, toggleVisibility) => {
-  axios
-    .post('/auth/signup', formProps)
-    .then(res => addNot(res.data))
-    .catch(err => addNot(err.response.data))
-    .finally(() => toggleVisibility());
+const signup = (formProps, toggleVisibility) => {
+  axios.post('/auth/signup', formProps).finally(() => toggleVisibility());
 };
 
-const resendEmail = (formProps, addNot, toggleVisibility, toggleDisablity) => {
-  axios
-    .post('/auth/resend', formProps)
-    .then(res => {
-      addNot(res.data);
-      toggleDisablity();
-    })
-    .catch(err => addNot(err.response.data))
-    .finally(() => toggleVisibility());
+const resendEmail = (formProps, toggleVisibility) => {
+  axios.post('/auth/resend', formProps).finally(() => toggleVisibility());
 };
 
-const verifyEmail = (formProps, redirect, addNot, toggleVisibility) => {
+const verifyEmail = (formProps, redirect, toggleVisibility) => {
   axios
     .post('/auth/confirmation', formProps)
-    .then(res => {
-      addNot(res.data);
-      redirect();
-    })
-    .catch(err => addNot(err.response.data))
+    .then(() => redirect())
     .finally(() => toggleVisibility());
 };
 
 const decodeAuthToken = token => {
+  const auth = { authenticated: null, user: null };
+
   try {
-    const jwt = token || localStorage.getItem('token');
-    return jwtDecode(jwt);
-  } catch (err) {
-    return null;
+    const now = Date.now().valueOf() / 1000;
+    const decodedJWT = jwtDecode(token);
+
+    if (decodedJWT.exp > now) {
+      auth.authenticated = token;
+      auth.user = decodedJWT;
+    }
+  } finally {
+    return auth;
   }
 };
 
-const forgotPassword = (
-  formProps,
-  addNot,
-  toggleVisibility,
-  toggleDisablity
-) => {
-  axios
-    .post('/auth/forgotpass', formProps)
-    .then(res => {
-      addNot(res.data);
-      toggleDisablity();
-    })
-    .catch(err => addNot(err.response.data))
-    .finally(() => toggleVisibility());
+const forgotPassword = (formProps, toggleVisibility) => {
+  axios.post('/auth/forgotpass', formProps).finally(() => toggleVisibility());
 };
 
-const resetPassword = (formProps, redirect, addNot, toggleVisibility) => {
+const resetPassword = (formProps, redirect, toggleVisibility) => {
   axios
     .post('/auth/resetpass', formProps)
-    .then(res => {
-      addNot(res.data);
-      redirect();
-    })
-    .catch(err => addNot(err.response.data))
+    .then(() => redirect())
     .finally(() => toggleVisibility());
 };
 

@@ -1,44 +1,20 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
 
-import { addNotification } from '../../actions';
 import { resendEmail } from '../../utils/authUtils';
-import timer from '../../utils/timer';
 
 class ResendEmail extends Component {
-  state = { isHidden: false, isDisabled: false };
+  state = { isHidden: false };
 
   onSubmit = formProps => {
     this.toggleVisibility();
-    resendEmail(
-      formProps,
-      this.props.addNotification,
-      this.toggleVisibility,
-      this.toggleDisablity
-    );
+    resendEmail(formProps, this.toggleVisibility);
   };
 
   toggleVisibility = () => {
     this.setState({
       isHidden: !this.state.isHidden
     });
-  };
-
-  toggleDisablity = () => {
-    this.setState({
-      isDisabled: true
-    });
-
-    const button = document.getElementById('button');
-    button.style.visibility = 'hidden';
-
-    timer();
-    setTimeout(() => {
-      button.style.visibility = 'visible';
-      this.setState({ isDisabled: false });
-    }, 30000);
   };
 
   renderField({ input, label, type, meta: { touched, error } }) {
@@ -57,7 +33,7 @@ class ResendEmail extends Component {
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, submitting } = this.props;
 
     return (
       <div className="limiter">
@@ -86,10 +62,7 @@ class ResendEmail extends Component {
 
               <div id="button" className="container-login100-form-btn m-t-17">
                 {!this.state.isHidden && (
-                  <button
-                    className="login100-form-btn"
-                    disabled={this.state.isDisabled}
-                  >
+                  <button className="login100-form-btn" disabled={submitting}>
                     Send verification email
                   </button>
                 )}
@@ -122,10 +95,4 @@ const validate = ({ email }) => {
   return errors;
 };
 
-export default compose(
-  connect(
-    null,
-    { addNotification }
-  ),
-  reduxForm({ form: 'resendEmail', validate })
-)(ResendEmail);
+export default reduxForm({ form: 'resendEmail', validate })(ResendEmail);

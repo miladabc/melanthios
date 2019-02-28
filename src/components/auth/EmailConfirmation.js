@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
 import queryString from 'query-string';
 import { Link } from 'react-router-dom';
 
-import { addNotification } from '../../actions';
 import { verifyEmail } from '../../utils/authUtils';
 
 class EmailConfirmation extends Component {
@@ -16,7 +13,6 @@ class EmailConfirmation extends Component {
     verifyEmail(
       formProps,
       () => this.props.history.push('/signin'),
-      this.props.addNotification,
       this.toggleVisibility
     );
   };
@@ -110,10 +106,4 @@ const validate = ({ token }) => {
   return errors;
 };
 
-export default compose(
-  connect(
-    null,
-    { addNotification }
-  ),
-  reduxForm({ form: 'confirmEmail', validate })
-)(EmailConfirmation);
+export default reduxForm({ form: 'confirmEmail', validate })(EmailConfirmation);

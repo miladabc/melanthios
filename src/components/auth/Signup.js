@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { addNotification } from '../../actions';
 import GoogleOAuth from './GoogleOAuth';
 import { signup } from '../../utils/authUtils';
-import { validate, asyncValidate } from '../../utils/signupValidation';
+import { signupValidate, asyncValidate } from '../../utils/formsValidation';
 
 const FIELDS = [
   { label: 'First Name', type: 'text', name: 'firstName' },
@@ -23,7 +20,7 @@ class Signup extends Component {
 
   onSubmit = formProps => {
     this.toggleVisibility();
-    signup(formProps, this.props.addNotification, this.toggleVisibility);
+    signup(formProps, this.toggleVisibility);
   };
 
   toggleVisibility = () => {
@@ -123,15 +120,9 @@ class Signup extends Component {
   }
 }
 
-export default compose(
-  connect(
-    null,
-    { addNotification }
-  ),
-  reduxForm({
-    form: 'signup',
-    validate,
-    asyncValidate,
-    asyncBlurFields: ['username', 'email']
-  })
-)(Signup);
+export default reduxForm({
+  form: 'signup',
+  validate: signupValidate,
+  asyncValidate,
+  asyncBlurFields: ['username', 'email']
+})(Signup);

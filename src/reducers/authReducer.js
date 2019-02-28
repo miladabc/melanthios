@@ -10,10 +10,7 @@ export default function(
 ) {
   switch (action.type) {
     case AUTH_USER:
-      return {
-        authenticated: action.payload,
-        user: decodeAuthToken(action.payload)
-      };
+      return decodeAuthToken(action.payload);
     default:
       return state;
   }

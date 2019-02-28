@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
 import queryString from 'query-string';
 
-import { addNotification } from '../../actions';
 import { resetPassword } from '../../utils/authUtils';
 
 class ResetPassword extends Component {
@@ -18,7 +15,6 @@ class ResetPassword extends Component {
         token: queryString.parse(this.props.location.search).token
       },
       () => this.props.history.push('/signin'),
-      this.props.addNotification,
       this.toggleVisibility
     );
   };
@@ -109,10 +105,4 @@ const validate = ({ password, confirmPassword }) => {
   return errors;
 };
 
-export default compose(
-  connect(
-    null,
-    { addNotification }
-  ),
-  reduxForm({ form: 'resetPassword', validate })
-)(ResetPassword);
+export default reduxForm({ form: 'resetPassword', validate })(ResetPassword);
