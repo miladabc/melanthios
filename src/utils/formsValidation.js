@@ -90,12 +90,17 @@ const profileValidate = values => {
   }
   if (email) if (!emailForm.test(email)) errors.email = 'Invalid email';
 
-  if (newPassword || confirmNewPassword) {
+  if (currentPassword || newPassword || confirmNewPassword) {
+    if (currentPassword && !newPassword)
+      errors.newPassword = 'Required for changing your password';
     if (!currentPassword)
       errors.currentPassword = 'Required for changing your password';
     if (newPassword !== confirmNewPassword)
       errors.confirmNewPassword = 'Passwords does not match';
   }
+
+  if (Object.getOwnPropertyNames(values).length === 0)
+    errors.confirmNewPassword = 'Nothing to update';
 
   return errors;
 };
