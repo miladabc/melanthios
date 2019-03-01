@@ -16,15 +16,12 @@ const addNotification = ({ success, msg: message }) => dispatch => {
   }
 };
 
-const signin = (formProps, redirect, toggleVisibility) => dispatch => {
-  axios
-    .post('/auth/signin', formProps)
-    .then(res => {
-      dispatch({ type: AUTH_USER, payload: res.data.token });
-      localStorage.setItem('token', res.data.token);
-      redirect();
-    })
-    .catch(() => toggleVisibility());
+const signin = (formProps, redirect) => dispatch => {
+  axios.post('/auth/signin', formProps).then(res => {
+    dispatch({ type: AUTH_USER, payload: res.data.token });
+    localStorage.setItem('token', res.data.token);
+    redirect();
+  });
 };
 
 const googleOAuth = (googleResponse, redirect, addNot) => dispatch => {
@@ -53,15 +50,12 @@ const signout = () => {
   };
 };
 
-const updateProfile = (formProps, redirect, toggleVisibility) => dispatch => {
-  axios
-    .patch('/user/profile', formProps)
-    .then(res => {
-      dispatch({ type: AUTH_USER, payload: res.data.token });
-      localStorage.setItem('token', res.data.token);
-      redirect();
-    })
-    .catch(() => toggleVisibility());
+const updateProfile = (formProps, redirect) => dispatch => {
+  axios.patch('/user/profile', formProps).then(res => {
+    dispatch({ type: AUTH_USER, payload: res.data.token });
+    localStorage.setItem('token', res.data.token);
+    redirect();
+  });
 };
 
 export { addNotification, signin, googleOAuth, signout, updateProfile };

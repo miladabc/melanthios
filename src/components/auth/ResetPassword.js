@@ -5,24 +5,14 @@ import queryString from 'query-string';
 import { resetPassword } from '../../utils/authUtils';
 
 class ResetPassword extends Component {
-  state = { isHidden: false, isDisabled: false };
-
   onSubmit = formProps => {
-    this.toggleVisibility();
     resetPassword(
       {
         ...formProps,
         token: queryString.parse(this.props.location.search).token
       },
-      () => this.props.history.push('/signin'),
-      this.toggleVisibility
+      () => this.props.history.push('/signin')
     );
-  };
-
-  toggleVisibility = () => {
-    this.setState({
-      isHidden: !this.state.isHidden
-    });
   };
 
   renderField({ input, label, type, meta: { touched, error } }) {
@@ -68,17 +58,7 @@ class ResetPassword extends Component {
               />
 
               <div id="button" className="container-login100-form-btn m-t-17">
-                {!this.state.isHidden ? (
-                  <button className="login100-form-btn">Reset Password</button>
-                ) : (
-                  <img
-                    src="/images/loading.svg"
-                    height="120"
-                    width="120"
-                    style={{ marginLeft: 'auto', marginRight: 'auto' }}
-                    alt=""
-                  />
-                )}
+                <button className="login100-form-btn">Reset Password</button>
               </div>
             </form>
           </div>

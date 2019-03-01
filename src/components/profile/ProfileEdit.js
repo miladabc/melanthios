@@ -23,21 +23,10 @@ const FIELDS = [
 ];
 
 class ProfileEdit extends Component {
-  state = { isHidden: false };
-
   onSubmit = formProps => {
-    this.toggleVisibility();
-    this.props.updateProfile(
-      formProps,
-      () => this.props.history.push('/profile'),
-      this.toggleVisibility
+    this.props.updateProfile(formProps, () =>
+      this.props.history.push('/profile')
     );
-  };
-
-  toggleVisibility = () => {
-    this.setState({
-      isHidden: !this.state.isHidden
-    });
   };
 
   profileField = ({
@@ -115,17 +104,13 @@ class ProfileEdit extends Component {
           </div>
 
           <div className="col-md-4" style={{ margin: 'auto' }}>
-            {!this.state.isHidden ? (
-              <button
-                className="login100-form-btn"
-                style={{ marginTop: '30px' }}
-                disabled={submitting}
-              >
-                Save
-              </button>
-            ) : (
-              <img src="/images/loading.svg" height="120" width="120" alt="" />
-            )}
+            <button
+              className="login100-form-btn"
+              style={{ marginTop: '30px' }}
+              disabled={submitting}
+            >
+              Save
+            </button>
           </div>
         </form>
       </div>

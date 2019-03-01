@@ -6,21 +6,8 @@ import { Link } from 'react-router-dom';
 import { verifyEmail } from '../../utils/authUtils';
 
 class EmailConfirmation extends Component {
-  state = { isHidden: false };
-
   onSubmit = formProps => {
-    this.toggleVisibility();
-    verifyEmail(
-      formProps,
-      () => this.props.history.push('/signin'),
-      this.toggleVisibility
-    );
-  };
-
-  toggleVisibility = () => {
-    this.setState({
-      isHidden: !this.state.isHidden
-    });
+    verifyEmail(formProps, () => this.props.history.push('/signin'));
   };
 
   renderField = ({ input, label, type, meta: { touched, error } }) => {
@@ -66,19 +53,9 @@ class EmailConfirmation extends Component {
               />
 
               <div className="container-login100-form-btn m-t-17">
-                {!this.state.isHidden ? (
-                  <button className="login100-form-btn" disabled={submitting}>
-                    Verify Your Email
-                  </button>
-                ) : (
-                  <img
-                    src="/images/loading.svg"
-                    height="120"
-                    width="120"
-                    style={{ marginLeft: 'auto', marginRight: 'auto' }}
-                    alt=""
-                  />
-                )}
+                <button className="login100-form-btn" disabled={submitting}>
+                  Verify Your Email
+                </button>
               </div>
 
               <div className="w-full text-center p-t-55">

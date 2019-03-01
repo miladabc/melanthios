@@ -46,6 +46,8 @@ const signupValidate = values => {
 };
 
 const asyncValidate = ({ username, email }) => {
+  if (!username && !email) return Promise.resolve();
+
   return axios
     .post('/auth/isitavailable', {
       username,

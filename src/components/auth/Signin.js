@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { signin } from '../../actions';
-import GoogleOAuth from './GoogleOAuth';
+import SocialAuth from './socialAuth';
 
 const FIELDS = [
   { label: 'Email or Username', type: 'text', name: 'emailOrUsername' },
@@ -13,21 +13,8 @@ const FIELDS = [
 ];
 
 class Signin extends Component {
-  state = { isHidden: false };
-
   onSubmit = formProps => {
-    this.toggleVisibility();
-    this.props.signin(
-      formProps,
-      () => this.props.history.push('/feature'),
-      this.toggleVisibility
-    );
-  };
-
-  toggleVisibility = () => {
-    this.setState({
-      isHidden: !this.state.isHidden
-    });
+    this.props.signin(formProps, () => this.props.history.push('/feature'));
   };
 
   signinField({ input, label, type, meta: { touched, error } }) {
@@ -66,35 +53,19 @@ class Signin extends Component {
       <div className="limiter">
         <div className="container-login100">
           <div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+            <span className="login100-form-title p-b-53">Sign In With</span>
+            <SocialAuth />
+
             <form
               className="login100-form validate-form flex-sb flex-w"
               onSubmit={handleSubmit(this.onSubmit)}
             >
-              <span className="login100-form-title p-b-53">Sign In With</span>
-
-              <GoogleOAuth />
-
-              <a href="/face" className="btn-face m-b-20">
-                <i className="fa fa-facebook-official" />
-                Facebook
-              </a>
-
               {this.renderFields()}
 
               <div className="container-login100-form-btn m-t-17">
-                {!this.state.isHidden ? (
-                  <button className="login100-form-btn" disabled={submitting}>
-                    Sign In
-                  </button>
-                ) : (
-                  <img
-                    src="/images/loading.svg"
-                    height="120"
-                    width="120"
-                    style={{ marginLeft: 'auto', marginRight: 'auto' }}
-                    alt=""
-                  />
-                )}
+                <button className="login100-form-btn" disabled={submitting}>
+                  Sign In
+                </button>
               </div>
 
               <div className="w-full text-center p-t-55">

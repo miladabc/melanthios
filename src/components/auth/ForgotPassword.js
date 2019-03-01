@@ -4,17 +4,8 @@ import { reduxForm, Field } from 'redux-form';
 import { forgotPassword } from '../../utils/authUtils';
 
 class ForgotPassword extends Component {
-  state = { isHidden: false, isDisabled: false };
-
   onSubmit = formProps => {
-    this.toggleVisibility();
-    forgotPassword(formProps, this.toggleVisibility);
-  };
-
-  toggleVisibility = () => {
-    this.setState({
-      isHidden: !this.state.isHidden
-    });
+    forgotPassword(formProps);
   };
 
   renderField({ input, label, type, meta: { touched, error } }) {
@@ -54,28 +45,10 @@ class ForgotPassword extends Component {
                 label="Your Email or Username"
               />
 
-              <span
-                id="remaining"
-                className="text-danger"
-                style={{ marginLeft: '120px', marginTop: '10px' }}
-              />
-
               <div id="button" className="container-login100-form-btn m-t-17">
-                {!this.state.isHidden && (
-                  <button className="login100-form-btn" disabled={submitting}>
-                    Reset Password
-                  </button>
-                )}
-
-                {this.state.isHidden && (
-                  <img
-                    src="/images/loading.svg"
-                    height="120"
-                    width="120"
-                    style={{ marginLeft: 'auto', marginRight: 'auto' }}
-                    alt=""
-                  />
-                )}
+                <button className="login100-form-btn" disabled={submitting}>
+                  Reset Password
+                </button>
               </div>
             </form>
           </div>

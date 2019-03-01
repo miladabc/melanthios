@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
+import './app.css';
 import { addNotification, signout } from '../actions';
 import Header from './Header';
 import Home from './Home';
@@ -20,13 +21,23 @@ axios.defaults.baseURL = process.env.REACT_APP_API_URI;
 
 class App extends Component {
   componentDidMount() {
+    axios.interceptors.request.use(
+      config => {
+        document.getElementById('spinner').classList.add('spinner');
+        return config;
+      },
+      err => Promise.reject(err)
+    );
+
     axios.interceptors.response.use(
       res => {
+        document.getElementById('spinner').classList.remove('spinner');
         this.props.addNotification(res.data);
 
         return res;
       },
       err => {
+        document.getElementById('spinner').classList.remove('spinner');
         this.props.addNotification(err.response.data);
         if (err.response.status === 401) {
           this.props.signout();
@@ -50,10 +61,11 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container-fluid">
-        <BrowserRouter>
+      <BrowserRouter>
+        <div>
+          <Header />
           <div>
-            <Header />
+            <div id="spinner" />
             <Switch>
               <Route exact path="/" component={Home} />
               <Route exact path="/signup" component={Signup} />
@@ -68,8 +80,8 @@ class App extends Component {
               <Route component={Home} />
             </Switch>
           </div>
-        </BrowserRouter>
-      </div>
+        </div>
+      </BrowserRouter>
     );
   }
 }
