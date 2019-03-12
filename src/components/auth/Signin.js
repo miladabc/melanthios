@@ -4,8 +4,8 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import GoogleOAuth from './GoogleOAuth';
 import { signin } from '../../actions';
-import SocialAuth from './socialAuth';
 
 const FIELDS = [
   { label: 'Email or Username', type: 'text', name: 'emailOrUsername' },
@@ -54,7 +54,7 @@ class Signin extends Component {
         <div className="container-login100">
           <div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
             <span className="login100-form-title p-b-53">Sign In With</span>
-            <SocialAuth />
+            <GoogleOAuth />
 
             <form
               className="login100-form validate-form flex-sb flex-w"

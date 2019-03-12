@@ -60,7 +60,10 @@ class Header extends Component {
 
   render() {
     return (
-      <nav className="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+      <nav
+        className="navbar navbar-expand-lg sticky-top navbar-dark bg-dark"
+        style={{ zIndex: 7999 }}
+      >
         <Link className="navbar-brand" to="/">
           Brand
         </Link>

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 
+import GoogleOAuth from './GoogleOAuth';
 import { signup } from '../../utils/authUtils';
 import { signupValidate, asyncValidate } from '../../utils/formsValidation';
-import SocialAuth from './socialAuth';
 
 const FIELDS = [
   { label: 'First Name', type: 'text', name: 'firstName' },
@@ -66,7 +66,7 @@ class Signup extends Component {
         <div className="container-login100">
           <div className="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
             <span className="login100-form-title p-b-53">Sign Up With</span>
-            <SocialAuth />
+            <GoogleOAuth />
 
             <form
               className="login100-form validate-form flex-sb flex-w"

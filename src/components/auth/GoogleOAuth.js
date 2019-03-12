@@ -25,7 +25,7 @@ class GoogleOAuth extends Component {
           <button
             onClick={renderProps.onClick}
             className="btn-google m-b-20"
-            style={{ display: 'inline-block', marginRight: '20px' }}
+            style={{ width: '100%' }}
           >
             <img src="images/icons/icon-google.png" alt="GOOGLE" />
             Google

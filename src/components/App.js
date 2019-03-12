@@ -16,6 +16,7 @@ import ResetPassword from './auth/ResetPassword';
 import ProfileView from './profile/ProfileView';
 import ProfileEdit from './profile/ProfileEdit';
 import Feature from './Feature';
+import Footer from './footer';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URI;
 
@@ -62,10 +63,10 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <div>
+        <div className="parrent">
           <Header />
-          <div>
-            <div id="spinner" />
+          <div id="spinner" />
+          <main className="main-content">
             <Switch>
               <Route exact path="/" component={Home} />
               <Route exact path="/signup" component={Signup} />
@@ -79,7 +80,8 @@ class App extends Component {
               <Route exact path="/feature" component={Feature} />
               <Route component={Home} />
             </Switch>
-          </div>
+          </main>
+          <Footer />
         </div>
       </BrowserRouter>
     );

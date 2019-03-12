@@ -80,39 +80,45 @@ class ProfileEdit extends Component {
     const { handleSubmit, submitting } = this.props;
 
     return (
-      <div className="container emp-profile">
-        <form onSubmit={handleSubmit(this.onSubmit)}>
-          <div className="row">
-            <div className="col-md-4">
-              <div className="profile-img">
-                <img className="rounded-circle" src="/images/user.png" alt="" />
-                <div id="imgfile" className="file btn btn-lg btn-primary">
-                  Change Photo
-                  <input
-                    type="file"
-                    name="proPhoto"
-                    accept="image/png, image/jpeg, image/jpg"
-                    onChange={this.onImageChange}
+      <div className="container-login100">
+        <div className="container emp-profile">
+          <form onSubmit={handleSubmit(this.onSubmit)}>
+            <div className="row">
+              <div className="col-md-4">
+                <div className="profile-img">
+                  <img
+                    className="rounded-circle"
+                    src="/images/user.png"
+                    alt=""
                   />
+                  <div id="imgfile" className="file btn btn-lg btn-primary">
+                    Change Photo
+                    <input
+                      type="file"
+                      name="proPhoto"
+                      accept="image/png, image/jpeg, image/jpg"
+                      onChange={this.onImageChange}
+                    />
+                  </div>
                 </div>
               </div>
+              <div className="col-md-6">
+                <h3>Update your profile</h3>
+                {this.renderFields()}
+              </div>
             </div>
-            <div className="col-md-6">
-              <h3>Update your profile</h3>
-              {this.renderFields()}
-            </div>
-          </div>
 
-          <div className="col-md-4" style={{ margin: 'auto' }}>
-            <button
-              className="login100-form-btn"
-              style={{ marginTop: '30px' }}
-              disabled={submitting}
-            >
-              Save
-            </button>
-          </div>
-        </form>
+            <div className="col-md-4" style={{ margin: 'auto' }}>
+              <button
+                className="login100-form-btn"
+                style={{ marginTop: '30px' }}
+                disabled={submitting}
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }
