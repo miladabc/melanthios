@@ -58,7 +58,7 @@ class ProfileView extends Component {
             <div className="col-md-2">
               <Link
                 className="login100-form-btn"
-                to="/profiledit"
+                to="/profile/edit"
                 style={{ color: 'white' }}
               >
                 Edit Profile

@@ -76,7 +76,7 @@ class App extends Component {
               <Route exact path="/forgotpass" component={ForgotPassword} />
               <Route exact path="/resetpass" component={ResetPassword} />
               <Route exact path="/profile" component={ProfileView} />
-              <Route exact path="/profiledit" component={ProfileEdit} />
+              <Route exact path="/profile/edit" component={ProfileEdit} />
               <Route exact path="/feature" component={Feature} />
               <Route component={Home} />
             </Switch>
