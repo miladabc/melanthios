@@ -27,7 +27,7 @@ class GoogleOAuth extends Component {
             className="btn-google m-b-20"
             style={{ width: '100%' }}
           >
-            <img src="images/icons/icon-google.png" alt="GOOGLE" />
+            <img src="images/google.png" alt="GOOGLE" />
             Google
           </button>
         )}

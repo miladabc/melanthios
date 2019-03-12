@@ -17,6 +17,7 @@ import ProfileView from './profile/ProfileView';
 import ProfileEdit from './profile/ProfileEdit';
 import Feature from './Feature';
 import Footer from './footer';
+import NotFound from './notFound';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URI;
 
@@ -78,7 +79,7 @@ class App extends Component {
               <Route exact path="/profile" component={ProfileView} />
               <Route exact path="/profile/edit" component={ProfileEdit} />
               <Route exact path="/feature" component={Feature} />
-              <Route component={Home} />
+              <Route component={NotFound} />
             </Switch>
           </main>
           <Footer />
