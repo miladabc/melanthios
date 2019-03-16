@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { AUTH_USER, ADD_NOTIFICATION } from './types';
+import { GET_USER, AUTH_USER, ADD_NOTIFICATION } from './types';
 
 const addNotification = ({ success, msg: message }) => dispatch => {
   if (message) {
@@ -14,6 +14,12 @@ const addNotification = ({ success, msg: message }) => dispatch => {
       notType
     });
   }
+};
+
+const getUser = () => dispatch => {
+  axios.get('/user').then(({ data }) => {
+    dispatch({ type: GET_USER, payload: data });
+  });
 };
 
 const signin = (formProps, redirect) => dispatch => {
@@ -90,6 +96,7 @@ const deleteAvatar = () => dispatch => {
 
 export {
   addNotification,
+  getUser,
   signin,
   googleOAuth,
   signout,

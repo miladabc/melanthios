@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 
 import './app.css';
-import { addNotification, signout } from '../actions';
+import { addNotification, getUser, signout } from '../actions';
 import Header from './Header';
 import Home from './Home';
 import Signup from './auth/Signup';
@@ -23,6 +23,11 @@ axios.defaults.baseURL = process.env.REACT_APP_API_URI;
 
 class App extends Component {
   componentDidMount() {
+    if (this.props.token) {
+      axios.defaults.headers.common.Authorization = this.props.token;
+      this.props.getUser();
+    }
+
     axios.interceptors.request.use(
       config => {
         document.getElementById('spinner').classList.add('spinner');
@@ -54,9 +59,6 @@ class App extends Component {
         return Promise.reject(err);
       }
     );
-
-    if (this.props.token)
-      axios.defaults.headers.common.Authorization = this.props.token;
   }
 
   componentDidUpdate() {
@@ -95,5 +97,5 @@ const mapStateToProps = state => ({ token: state.auth.authenticated });
 
 export default connect(
   mapStateToProps,
-  { addNotification, signout }
+  { addNotification, getUser, signout }
 )(App);
