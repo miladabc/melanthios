@@ -19,7 +19,6 @@ const addNotification = ({ success, msg: message }) => dispatch => {
 const signin = (formProps, redirect) => dispatch => {
   axios.post('/auth/signin', formProps).then(res => {
     dispatch({ type: AUTH_USER, payload: res.data.token });
-    localStorage.setItem('token', res.data.token);
     redirect();
   });
 };
@@ -32,7 +31,6 @@ const googleOAuth = (googleResponse, redirect, addNot) => dispatch => {
     .then(res => {
       if (res.data.token) {
         dispatch({ type: AUTH_USER, payload: res.data.token });
-        localStorage.setItem('token', res.data.token);
         redirect();
       }
     })
@@ -53,9 +51,49 @@ const signout = () => {
 const updateProfile = (formProps, redirect) => dispatch => {
   axios.patch('/user/profile', formProps).then(res => {
     dispatch({ type: AUTH_USER, payload: res.data.token });
-    localStorage.setItem('token', res.data.token);
     redirect();
   });
 };
 
-export { addNotification, signin, googleOAuth, signout, updateProfile };
+const changeAvatar = (avatar, redirect) => dispatch => {
+  axios.get('/auth/uploadurl').then(({ data }) => {
+    const imageUpload = new FormData();
+    imageUpload.append('file', avatar);
+    imageUpload.append('signature', data.signature);
+    imageUpload.append('timestamp', data.timestamp);
+    imageUpload.append('api_key', data.api_key);
+    imageUpload.append('folder', data.folder);
+
+    axios
+      .post(data.url, imageUpload, {
+        transformRequest: [
+          (data, headers) => {
+            delete headers.common.Authorization;
+            return data;
+          }
+        ]
+      })
+      .then(({ data: { public_id, format } }) => {
+        axios.patch('/user/profile/avatar', { public_id, format }).then(res => {
+          dispatch({ type: AUTH_USER, payload: res.data.token });
+          redirect();
+        });
+      });
+  });
+};
+
+const deleteAvatar = () => dispatch => {
+  axios.delete('/user/profile/avatar').then(res => {
+    dispatch({ type: AUTH_USER, payload: res.data.token });
+  });
+};
+
+export {
+  addNotification,
+  signin,
+  googleOAuth,
+  signout,
+  updateProfile,
+  changeAvatar,
+  deleteAvatar
+};

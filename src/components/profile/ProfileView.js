@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import './profile.css';
 import requireAuth from '../requireAuth';
+import { avatarUrl } from '../../utils/userUtils';
 
 class ProfileView extends Component {
   render() {
@@ -13,7 +14,11 @@ class ProfileView extends Component {
           <div className="row">
             <div className="col-md-4">
               <div className="profile-img">
-                <img className="rounded-circle" src="/images/user.png" alt="" />
+                <img
+                  className="rounded-circle"
+                  src={avatarUrl(this.props.user.avatar)}
+                  alt=""
+                />
               </div>
             </div>
             <div className="col-md-6">

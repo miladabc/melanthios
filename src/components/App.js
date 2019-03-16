@@ -36,6 +36,8 @@ class App extends Component {
         document.getElementById('spinner').classList.remove('spinner');
         this.props.addNotification(res.data);
 
+        if (res.data.token) localStorage.setItem('token', res.data.token);
+
         return res;
       },
       err => {

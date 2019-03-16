@@ -6,7 +6,8 @@ import { reduxForm, Field } from 'redux-form';
 import './profile.css';
 import requireAuth from '../requireAuth';
 import { profileValidate, asyncValidate } from '../../utils/formsValidation';
-import { updateProfile } from '../../actions';
+import { updateProfile, changeAvatar, deleteAvatar } from '../../actions';
+import { avatarUrl } from '../../utils/userUtils';
 
 const FIELDS = [
   { label: 'First Name', type: 'text', name: 'firstName' },
@@ -23,8 +24,20 @@ const FIELDS = [
 ];
 
 class ProfileEdit extends Component {
+  state = { avatar: null };
+
   onSubmit = formProps => {
     this.props.updateProfile(formProps, () =>
+      this.props.history.push('/profile')
+    );
+  };
+
+  onImageChange = event => {
+    this.setState({ avatar: event.target.files[0] });
+  };
+
+  onChangeAvatar = () => {
+    this.props.changeAvatar(this.state.avatar, () =>
       this.props.history.push('/profile')
     );
   };
@@ -72,10 +85,6 @@ class ProfileEdit extends Component {
     });
   }
 
-  onImageChange = event => {
-    console.log(event.target.files[0]);
-  };
-
   render() {
     const { handleSubmit, submitting } = this.props;
 
@@ -88,32 +97,44 @@ class ProfileEdit extends Component {
                 <div className="profile-img">
                   <img
                     className="rounded-circle"
-                    src="/images/user.png"
+                    src={avatarUrl(this.props.user.avatar)}
                     alt=""
                   />
-                  <div id="imgfile" className="file btn btn-lg btn-primary">
-                    Change Photo
+                  <div className="file btn btn-lg btn-primary avatar">
+                    Select Photo
                     <input
+                      className="avatar-input"
                       type="file"
                       name="proPhoto"
                       accept="image/png, image/jpeg, image/jpg"
                       onChange={this.onImageChange}
                     />
                   </div>
+                  <div className="avatar-btns">
+                    <button
+                      className="btn btn-info"
+                      onClick={this.onChangeAvatar}
+                      disabled={!this.state.avatar}
+                    >
+                      Change
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={this.props.deleteAvatar}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="col-md-6">
-                <h3>Update your profile</h3>
+                <h3 className="profile-edit-header">Update your profile</h3>
                 {this.renderFields()}
               </div>
             </div>
 
-            <div className="col-md-4" style={{ margin: 'auto' }}>
-              <button
-                className="login100-form-btn"
-                style={{ marginTop: '30px' }}
-                disabled={submitting}
-              >
+            <div className="col-md-4 profile-save-btn">
+              <button className="login100-form-btn" disabled={submitting}>
                 Save
               </button>
             </div>
@@ -129,7 +150,7 @@ const mapStateToProps = state => ({ user: state.auth.user });
 export default compose(
   connect(
     mapStateToProps,
-    { updateProfile }
+    { updateProfile, changeAvatar, deleteAvatar }
   ),
   reduxForm({
     form: 'profile',
