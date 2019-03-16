@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { GET_USER, AUTH_USER, ADD_NOTIFICATION } from './types';
+import { AUTH_USER, ADD_NOTIFICATION } from './types';
 
 const addNotification = ({ success, msg: message }) => dispatch => {
   if (message) {
@@ -18,7 +18,8 @@ const addNotification = ({ success, msg: message }) => dispatch => {
 
 const getUser = () => dispatch => {
   axios.get('/user').then(({ data }) => {
-    dispatch({ type: GET_USER, payload: data });
+    dispatch({ type: AUTH_USER, payload: data.token });
+    localStorage.setItem('token', data.token);
   });
 };
 
