@@ -10,8 +10,8 @@ class Header extends Component {
       return (
         <>
           <li className="nav-item">
-            <Link className="nav-link" to="/feature">
-              Feature
+            <Link className="nav-link" to="/tictactoe">
+              Tic-Tac Toe
             </Link>
           </li>
           <li className="nav-item dropdown">

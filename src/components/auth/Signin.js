@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import GoogleOAuth from './GoogleOAuth';
-import { signin } from '../../actions';
+import { signin, getSocket } from '../../actions';
 
 const FIELDS = [
   { label: 'Email or Username', type: 'text', name: 'emailOrUsername' },
@@ -14,7 +14,10 @@ const FIELDS = [
 
 class Signin extends Component {
   onSubmit = formProps => {
-    this.props.signin(formProps, () => this.props.history.push('/feature'));
+    this.props.signin(formProps, () => {
+      this.props.history.push('/');
+      this.props.getSocket();
+    });
   };
 
   signinField({ input, label, type, meta: { touched, error } }) {
@@ -113,7 +116,7 @@ const validate = values => {
 export default compose(
   connect(
     null,
-    { signin }
+    { signin, getSocket }
   ),
   reduxForm({ form: 'signin', validate })
 )(Signin);

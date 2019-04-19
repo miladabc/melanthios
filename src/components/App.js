@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 
 import './app.css';
-import { addNotification, getUser, signout } from '../actions';
+import { addNotification, getUser, signout, getSocket } from '../actions';
 import Header from './Header';
 import Home from './Home';
 import Signup from './auth/Signup';
@@ -15,7 +15,7 @@ import ForgotPassword from './auth/ForgotPassword';
 import ResetPassword from './auth/ResetPassword';
 import ProfileView from './profile/ProfileView';
 import ProfileEdit from './profile/ProfileEdit';
-import Feature from './Feature';
+import TicTacToe from './TicTacToe';
 import Footer from './footer';
 import NotFound from './notFound';
 
@@ -26,6 +26,7 @@ class App extends Component {
     if (this.props.token) {
       axios.defaults.headers.common.Authorization = this.props.token;
       this.props.getUser();
+      this.props.getSocket();
     }
 
     axios.interceptors.request.use(
@@ -82,7 +83,7 @@ class App extends Component {
               <Route exact path="/resetpass" component={ResetPassword} />
               <Route exact path="/profile" component={ProfileView} />
               <Route exact path="/profile/edit" component={ProfileEdit} />
-              <Route exact path="/feature" component={Feature} />
+              <Route exact path="/tictactoe" component={TicTacToe} />
               <Route component={NotFound} />
             </Switch>
           </main>
@@ -97,5 +98,5 @@ const mapStateToProps = state => ({ token: state.auth.authenticated });
 
 export default connect(
   mapStateToProps,
-  { addNotification, getUser, signout }
+  { addNotification, getUser, signout, getSocket }
 )(App);

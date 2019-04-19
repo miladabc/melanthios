@@ -1,6 +1,7 @@
 import axios from 'axios';
+import io from 'socket.io-client';
 
-import { AUTH_USER, ADD_NOTIFICATION } from './types';
+import { AUTH_USER, ADD_NOTIFICATION, GET_SOCKET, CLOSE_SOCKET } from './types';
 
 const addNotification = ({ success, msg: message }) => dispatch => {
   if (message) {
@@ -46,13 +47,10 @@ const googleOAuth = (googleResponse, redirect, addNot) => dispatch => {
     );
 };
 
-const signout = () => {
+const signout = () => dispatch => {
   localStorage.removeItem('token');
-
-  return {
-    type: AUTH_USER,
-    payload: ''
-  };
+  dispatch({ type: AUTH_USER, payload: '' });
+  dispatch({ type: CLOSE_SOCKET });
 };
 
 const updateProfile = (formProps, redirect) => dispatch => {
@@ -95,6 +93,12 @@ const deleteAvatar = () => dispatch => {
   });
 };
 
+const getSocket = () => {
+  const socket = io(process.env.REACT_APP_API_URI);
+
+  return { type: GET_SOCKET, payload: socket };
+};
+
 export {
   addNotification,
   getUser,
@@ -103,5 +107,6 @@ export {
   signout,
   updateProfile,
   changeAvatar,
-  deleteAvatar
+  deleteAvatar,
+  getSocket
 };
