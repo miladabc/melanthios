@@ -15,7 +15,8 @@ import ForgotPassword from './auth/ForgotPassword';
 import ResetPassword from './auth/ResetPassword';
 import ProfileView from './profile/ProfileView';
 import ProfileEdit from './profile/ProfileEdit';
-import TicTacToe from './TicTacToe';
+import GameRooms from './tictactoe/GameRooms';
+import TicTacToe from './tictactoe/TicTacToe';
 import Footer from './footer';
 import NotFound from './notFound';
 
@@ -83,7 +84,8 @@ class App extends Component {
               <Route exact path="/resetpass" component={ResetPassword} />
               <Route exact path="/profile" component={ProfileView} />
               <Route exact path="/profile/edit" component={ProfileEdit} />
-              <Route exact path="/tictactoe" component={TicTacToe} />
+              <Route exact path="/tictactoe" component={GameRooms} />
+              <Route exact path="/play" component={TicTacToe} />
               <Route component={NotFound} />
             </Switch>
           </main>

@@ -1,0 +1,12 @@
+.rooms {
+  max-width: 35rem;
+  margin: 100px auto 0 auto;
+}
+
+.room {
+  align-items: center;
+}
+
+.room-name {
+  padding-right: 10px;
+}
