@@ -27,7 +27,7 @@ const getUser = () => dispatch => {
 const signin = (formProps, redirect) => dispatch => {
   axios.post('/auth/signin', formProps).then(res => {
     dispatch({ type: AUTH_USER, payload: res.data.token });
-    redirect();
+    redirect(res.data.username);
   });
 };
 

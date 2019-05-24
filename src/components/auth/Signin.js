@@ -14,9 +14,9 @@ const FIELDS = [
 
 class Signin extends Component {
   onSubmit = formProps => {
-    this.props.signin(formProps, () => {
+    this.props.signin(formProps, username => {
       this.props.history.push('/');
-      this.props.getSocket();
+      this.props.getSocket(username);
     });
   };
 
