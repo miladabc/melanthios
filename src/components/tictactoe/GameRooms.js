@@ -82,7 +82,7 @@ class GameRooms extends Component {
   }
 
   letsPlay(roomToPlay) {
-    this.props.history.push(`/play?room=${roomToPlay}`);
+    this.props.history.push(`/tictactoe/play?room=${roomToPlay}`);
   }
 
   listGameRooms(rooms) {
@@ -162,7 +162,10 @@ class GameRooms extends Component {
     return (
       <>
         {this.state.joinedRoom.name && (
-          <li className="list-group-item font-weight-bold d-flex justify-content-between bg-info room">
+          <li
+            className="list-group-item font-weight-bold d-flex justify-content-between bg-info room"
+            style={{ borderRadius: '10px' }}
+          >
             <span className="text-white room-name">
               {this.state.joinedRoom.name}
             </span>
@@ -215,7 +218,10 @@ class GameRooms extends Component {
   }
 }
 
-const mapStateToProps = state => ({ socket: state.socket });
+const mapStateToProps = state => ({
+  socket: state.socket,
+  user: state.auth.user
+});
 
 export default connect(
   mapStateToProps,

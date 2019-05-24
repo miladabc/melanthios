@@ -11,7 +11,7 @@ class Header extends Component {
         <>
           <li className="nav-item">
             <Link className="nav-link" to="/tictactoe">
-              Tic-Tac Toe
+              Let's Play
             </Link>
           </li>
           <li className="nav-item dropdown">
@@ -65,7 +65,7 @@ class Header extends Component {
         style={{ zIndex: 7999 }}
       >
         <Link className="navbar-brand" to="/">
-          Brand
+          XO Game
         </Link>
         <button
           className="navbar-toggler"
@@ -82,9 +82,9 @@ class Header extends Component {
         <div className="navbar-collapse collapse w-100 order-1 order-md-0 navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/">
+              {/* <Link className="nav-link" to="/">
                 Left
-              </Link>
+              </Link> */}
             </li>
           </ul>
         </div>

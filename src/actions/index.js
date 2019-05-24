@@ -93,8 +93,8 @@ const deleteAvatar = () => dispatch => {
   });
 };
 
-const getSocket = () => {
-  const socket = io(process.env.REACT_APP_API_URI);
+const getSocket = username => {
+  const socket = io(`${process.env.REACT_APP_API_URI}?username=${username}`);
 
   return { type: GET_SOCKET, payload: socket };
 };

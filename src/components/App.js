@@ -27,7 +27,7 @@ class App extends Component {
     if (this.props.token) {
       axios.defaults.headers.common.Authorization = this.props.token;
       this.props.getUser();
-      this.props.getSocket();
+      this.props.getSocket(this.props.user.username);
     }
 
     axios.interceptors.request.use(
@@ -85,7 +85,7 @@ class App extends Component {
               <Route exact path="/profile" component={ProfileView} />
               <Route exact path="/profile/edit" component={ProfileEdit} />
               <Route exact path="/tictactoe" component={GameRooms} />
-              <Route exact path="/play" component={TicTacToe} />
+              <Route exact path="/tictactoe/play" component={TicTacToe} />
               <Route component={NotFound} />
             </Switch>
           </main>
@@ -96,7 +96,10 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => ({ token: state.auth.authenticated });
+const mapStateToProps = state => ({
+  token: state.auth.authenticated,
+  user: state.auth.user
+});
 
 export default connect(
   mapStateToProps,
