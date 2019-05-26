@@ -11,7 +11,7 @@ Play now:
 ## Stacks
 
 - **React v16**
-- **Redux** as state management
+- **Redux** for state management
 - **Node.js & Express** for back-end
 - **MongoDB**
 - **Mongoose** as ODM
