@@ -1,5 +1,10 @@
 .details {
   margin-left: 20px;
+  border-radius: 10px;
+}
+
+.details p {
+  color: #ffce00;
 }
 
 .details-room_name {
@@ -36,6 +41,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.game-grid button {
+  margin-top: 15px;
 }
 
 .game-row {
@@ -85,7 +94,7 @@
 }
 
 #chat-history {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .messages {

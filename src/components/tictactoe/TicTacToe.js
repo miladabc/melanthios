@@ -109,17 +109,14 @@ class TicTacToe extends Component {
 
   renderMessages = () => {
     return this.state.messages.map(({ sender, payload }, i) => {
-      let bgColor = 'bg-info';
-      let style = { alignSelf: 'flex-end' };
+      let style = { alignSelf: 'flex-end', backgroundColor: '#0e7995' };
 
-      if (sender !== this.props.user.username) {
-        bgColor = 'bg-secondary';
-        style = { alignSelf: 'flex-start' };
-      }
+      if (sender !== this.props.user.username)
+        style = { alignSelf: 'flex-start', backgroundColor: '#8f2424' };
 
       return (
-        <li className={`message ${bgColor}`} style={style} key={i}>
-          <p className="message-text text-light">{payload}</p>
+        <li className="message" style={style} key={i}>
+          <p className="message-text text-light font-weight-bold">{payload}</p>
         </li>
       );
     });
@@ -200,8 +197,8 @@ class TicTacToe extends Component {
     return (
       <>
         <div className="game-grid center-align tall-container-grow">
+          <span className="turn text-light">{status}</span>
           {rows}
-          <span className="turn text-dark">{status}</span>
           {this.state.gameFinished ? (
             <button className="btn btn-danger" onClick={this.resetGame}>
               Play again
@@ -215,7 +212,7 @@ class TicTacToe extends Component {
   renderChatBox() {
     return (
       <div className="card border-secondary chat-box">
-        <div className="card-header bg-transparent border-secondary text-secondary">
+        <div className="card-header bg-transparent border-secondary text-light font-weight-bold text-center">
           Talk to your opponent
         </div>
         <div id="chat-history" className="card-body text-secondary">
@@ -248,14 +245,12 @@ class TicTacToe extends Component {
   render() {
     return (
       <div className="play-room">
-        <div className="card bg-transparent details">
+        <div className="card details">
           <div className="card-body">
             <h4 className="text-white">Game Room:</h4>
-            <p className="details-room_name card-text text-dark h4">
-              {this.state.room}
-            </p>
+            <p className="details-room_name card-text h4">{this.state.room}</p>
             <h5 className="text-white">Opponent:</h5>
-            <p className="card-text text-dark h4">{this.state.opponent}</p>
+            <p className="card-text h4">{this.state.opponent}</p>
           </div>
         </div>
         {this.renderBoard()}

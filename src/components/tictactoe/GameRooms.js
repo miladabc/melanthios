@@ -162,10 +162,7 @@ class GameRooms extends Component {
     return (
       <>
         {this.state.joinedRoom.name && (
-          <li
-            className="list-group-item font-weight-bold d-flex justify-content-between bg-info room"
-            style={{ borderRadius: '10px' }}
-          >
+          <li className="list-group-item font-weight-bold d-flex justify-content-between bg-info room">
             <span className="text-white room-name">
               {this.state.joinedRoom.name}
             </span>

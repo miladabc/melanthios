@@ -1,0 +1,37 @@
+.home {
+  margin-top: 50px;
+}
+
+.home-content {
+  border-radius: 10px;
+}
+
+.home-btns {
+  margin-top: 20px;
+}
+
+.between-btns {
+  margin: 0 7px;
+}
+
+.stacks-item {
+  margin: 0 10px;
+  border-radius: 10px;
+  text-align: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.stacks-item a {
+  color: #a37d0a;
+}
+
+.stacks-item p {
+  color: #f8f9fa;
+}
+
+@media (max-width: 560px) {
+  .stacks-item {
+    margin: 15px;
+  }
+}

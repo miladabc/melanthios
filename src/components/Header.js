@@ -62,10 +62,10 @@ class Header extends Component {
     return (
       <nav
         className="navbar navbar-expand-lg sticky-top navbar-dark bg-dark"
-        style={{ zIndex: 7999 }}
+        style={{ zIndex: 7999, boxShadow: '0 7px 10px #343a40' }}
       >
-        <Link className="navbar-brand" to="/">
-          XO Game
+        <Link className="navbar-brand" style={{ padding: 0 }} to="/">
+          <img src="/images/xo.png" height="50" width="50" alt="Brand" /> Game
         </Link>
         <button
           className="navbar-toggler"
