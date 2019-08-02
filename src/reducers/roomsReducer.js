@@ -4,7 +4,8 @@ export default function(
   state = {
     all: [],
     available: [],
-    joined: {}
+    joined: {},
+    mode: 'simple'
   },
   action
 ) {
@@ -12,7 +13,7 @@ export default function(
     case LIST_ROOMS:
       const { all, available, joined } = action.payload;
 
-      return { all, available, joined };
+      return { ...state, all, available, joined };
     case JOIN_ROOM:
       state.joined.name = action.payload;
 

@@ -1,25 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import './ticTacToe.css';
+import './playRoom.css';
 import requireAuth from '../requireAuth';
+import { scrollChatBoxToBottom } from '../../utils/chatUtils';
+import { addMessage } from '../../actions/chatActions';
+import { updateBoard } from '../../actions/boardActions';
+import { updateStatus } from '../../actions/statusActions';
 
-const scrollChatBoxToBottom = () => {
-  const e = document.getElementById('chat-history');
-  e.scrollTop = e.scrollHeight;
-};
-
-class TicTacToe extends Component {
-  state = {
-    message: '',
-    messages: [],
-    board: Array(9).fill(null),
-    turn: false,
-    opponent: '',
-    winner: '',
-    line: [],
-    gameFinished: false
-  };
+class PlayRoom extends Component {
+  state = { message: '' };
 
   componentDidMount() {
     if (this.props.socket) {
@@ -27,52 +17,46 @@ class TicTacToe extends Component {
         'whosTurn',
         this.props.joinedRoom,
         ({ turn, opponent }) => {
-          this.setState({ turn, opponent });
+          this.props.updateStatus({ turn, opponent });
         }
       );
-
-      this.props.socket.on('message', msg => {
-        this.setState(prevState => ({
-          messages: [...prevState.messages, msg]
-        }));
-
-        scrollChatBoxToBottom();
-      });
 
       this.props.socket.on(
         'turnPlayed',
         ({ board, status: { winner, line, gameFinished } }) => {
-          this.setState({ board, turn: true, winner, line, gameFinished });
+          this.props.updateStatus({ turn: true, winner, line, gameFinished });
+          this.props.updateBoard(this.props.gameMode, board);
         }
       );
 
       this.props.socket.on('resetGame', ({ playerTurn }) => {
-        let turn = this.state.winner === this.props.user.username;
-        if (this.state.winner === 'DRAW')
+        let turn = this.props.status.winner === this.props.user.username;
+        if (this.props.status.winner === 'DRAW')
           turn = this.props.socket.id === playerTurn;
 
-        this.setState({
-          board: Array(9).fill(null),
+        this.props.updateStatus({
           turn,
           winner: '',
           line: [],
           gameFinished: false
         });
+        this.props.updateBoard(this.props.gameMode, Array(9).fill(null));
       });
     }
   }
 
   handleCellClick(cellNum) {
-    const board = [...this.state.board];
+    const board = [...this.props.board.simple];
     board[cellNum] = this.props.user.username;
 
-    this.setState({ board, turn: false });
+    this.props.updateStatus({ turn: false });
+    this.props.updateBoard(this.props.gameMode, board);
 
     this.props.socket.emit(
       'turnPlayed',
       { room: this.props.joinedRoom, board },
       ({ winner, line, gameFinished }) => {
-        this.setState({ winner, line, gameFinished });
+        this.props.updateStatus({ winner, line, gameFinished });
       }
     );
   }
@@ -97,16 +81,14 @@ class TicTacToe extends Component {
       message
     });
 
-    this.setState(prevState => ({
-      message: '',
-      messages: [...prevState.messages, message]
-    }));
+    this.setState({ message: '' });
+    this.props.addMessage(message);
 
     scrollChatBoxToBottom();
   };
 
   renderMessages = () => {
-    return this.state.messages.map(({ sender, payload }, i) => {
+    return this.props.messages.map(({ sender, payload }, i) => {
       let style = { alignSelf: 'flex-end', backgroundColor: '#0e7995' };
 
       if (sender !== this.props.user.username)
@@ -127,26 +109,31 @@ class TicTacToe extends Component {
     if (rowNum === 2) j = 6;
 
     for (let i = 0; i < 3; i++) {
+      const cell = i + j;
       const sign =
-        this.state.board[i + j] === this.props.user.username ? '╳' : '◯';
+        this.props.board.simple[cell] === this.props.user.username ? '╳' : '◯';
       let gameCellClassNames = 'game-cell-disabled';
       let onClick = null;
       let backgroundColor;
 
-      if (this.state.turn || this.state.gameFinished) gameCellClassNames = '';
+      if (this.props.status.turn || this.props.status.gameFinished)
+        gameCellClassNames = '';
 
       if (
-        this.state.turn &&
-        !this.state.gameFinished &&
-        !this.state.board[i + j]
+        this.props.status.turn &&
+        !this.props.status.gameFinished &&
+        !this.props.board.simple[cell]
       ) {
         gameCellClassNames = 'hoverable';
 
-        onClick = () => this.handleCellClick(i + j);
+        onClick = () => this.handleCellClick(cell);
       }
 
-      if (this.state.gameFinished && this.state.line.includes(i + j)) {
-        if (this.state.winner === this.props.user.username)
+      if (
+        this.props.status.gameFinished &&
+        this.props.status.line.includes(cell)
+      ) {
+        if (this.props.status.winner === this.props.user.username)
           backgroundColor = '#70db70';
         else backgroundColor = '#ff8a80';
       }
@@ -156,10 +143,10 @@ class TicTacToe extends Component {
           className={`game-cell ${gameCellClassNames}`}
           onClick={onClick}
           style={{ backgroundColor }}
-          key={i + j}
+          key={cell}
         >
           <span className="game-cell-label center-align">
-            {this.state.board[i + j] && sign}
+            {this.props.board.simple[cell] && sign}
           </span>
         </div>
       );
@@ -170,10 +157,10 @@ class TicTacToe extends Component {
 
   renderBoard() {
     const rows = [];
-    let status = this.state.turn ? 'Your Turn' : 'Opponent Turn';
+    let status = this.props.status.turn ? 'Your Turn' : 'Opponent Turn';
 
-    if (this.state.gameFinished)
-      switch (this.state.winner) {
+    if (this.props.status.gameFinished)
+      switch (this.props.status.winner) {
         case 'DRAW':
           status = 'DRAW';
           break;
@@ -197,7 +184,7 @@ class TicTacToe extends Component {
         <div className="game-grid center-align tall-container-grow">
           <span className="turn text-light">{status}</span>
           {rows}
-          {this.state.gameFinished ? (
+          {this.props.status.gameFinished ? (
             <button className="btn btn-danger" onClick={this.resetGame}>
               Play again
             </button>
@@ -250,7 +237,7 @@ class TicTacToe extends Component {
               {this.props.joinedRoom}
             </p>
             <h5 className="text-white">Opponent:</h5>
-            <p className="card-text h4">{this.state.opponent}</p>
+            <p className="card-text h4">{this.props.status.opponent}</p>
           </div>
         </div>
         {this.renderBoard()}
@@ -262,7 +249,14 @@ class TicTacToe extends Component {
 
 const mapStateToProps = state => ({
   socket: state.socket,
-  joinedRoom: state.rooms.joined.name
+  joinedRoom: state.rooms.joined.name,
+  gameMode: state.rooms.mode,
+  messages: state.messages,
+  board: state.board,
+  status: state.status
 });
 
-export default connect(mapStateToProps)(requireAuth(TicTacToe));
+export default connect(
+  mapStateToProps,
+  { addMessage, updateBoard, updateStatus }
+)(requireAuth(PlayRoom));

@@ -5,6 +5,8 @@ import './gameRooms.css';
 import requireAuth from '../requireAuth';
 import { addNotification } from '../../actions';
 import { listRooms, joinRoom } from '../../actions/roomActions';
+import { addMessage } from '../../actions/chatActions';
+import { scrollChatBoxToBottom } from '../../utils/chatUtils';
 
 class GameRooms extends Component {
   state = {
@@ -25,6 +27,12 @@ class GameRooms extends Component {
           success: true,
           msg: 'Game room is ready, let\'s play...'
         });
+      });
+
+      this.props.socket.on('message', message => {
+        this.props.addMessage(message);
+
+        scrollChatBoxToBottom();
       });
     }
   }
@@ -67,8 +75,8 @@ class GameRooms extends Component {
     );
   }
 
-  letsPlay(roomToPlay) {
-    this.props.history.push(`/tictactoe/play?room=${roomToPlay}`);
+  letsPlay() {
+    this.props.history.push(`/tictactoe/play`);
   }
 
   validateRoomName() {
@@ -146,10 +154,7 @@ class GameRooms extends Component {
       return <span className="btn btn-light">Waiting for opponent</span>;
     } else if (room.length === 2) {
       return (
-        <button
-          className="btn btn-light"
-          onClick={() => this.letsPlay(room.name)}
-        >
+        <button className="btn btn-light" onClick={() => this.letsPlay()}>
           Play
         </button>
       );
@@ -190,5 +195,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { addNotification, listRooms, joinRoom }
+  { addNotification, listRooms, joinRoom, addMessage }
 )(requireAuth(GameRooms));
