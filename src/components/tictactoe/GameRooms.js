@@ -4,28 +4,18 @@ import { connect } from 'react-redux';
 import './gameRooms.css';
 import requireAuth from '../requireAuth';
 import { addNotification } from '../../actions';
-
-const roomNamePrefix = 'ttt_';
+import { listRooms, joinRoom } from '../../actions/roomActions';
 
 class GameRooms extends Component {
   state = {
     formInput: '',
-    errMsg: '',
-    allOnlineRooms: [],
-    availableRooms: [],
-    joinedRoom: {}
+    errMsg: ''
   };
 
   componentDidMount() {
     if (this.props.socket) {
       this.props.socket.on('roomsList', rooms => {
-        const {
-          allOnlineRooms,
-          availableRooms,
-          joinedRoom
-        } = this.listGameRooms(rooms);
-
-        this.setState({ allOnlineRooms, availableRooms, joinedRoom });
+        this.props.listRooms(rooms, this.props.rooms.joined);
       });
 
       this.props.socket.emit('getRooms');
@@ -51,7 +41,7 @@ class GameRooms extends Component {
       'joinRoom',
       {
         roomToJoin: this.state.formInput,
-        joinedRoom: this.state.joinedRoom.name,
+        joinedRoom: this.props.rooms.joined.name,
         creating: true
       },
       () => {
@@ -60,10 +50,8 @@ class GameRooms extends Component {
           msg: 'Your room has been created, waiting for opponent...'
         });
 
-        this.setState({
-          formInput: '',
-          joinedRoom: { name: this.state.formInput }
-        });
+        this.props.joinRoom(this.state.formInput);
+        this.setState({ formInput: '' });
       }
     );
   };
@@ -73,11 +61,9 @@ class GameRooms extends Component {
       'joinRoom',
       {
         roomToJoin,
-        joinedRoom: this.state.joinedRoom.name
+        joinedRoom: this.props.rooms.joined.name
       },
-      () => {
-        this.setState({ joinedRoom: { name: roomToJoin } });
-      }
+      () => this.props.joinRoom(roomToJoin)
     );
   }
 
@@ -85,29 +71,10 @@ class GameRooms extends Component {
     this.props.history.push(`/tictactoe/play?room=${roomToPlay}`);
   }
 
-  listGameRooms(rooms) {
-    return Object.entries(rooms).reduce(
-      (result, [roomName, room]) => {
-        if (roomName.slice(0, 4) === roomNamePrefix) {
-          const name = roomName.slice(4);
-
-          result.allOnlineRooms.push(name);
-
-          if (name === this.state.joinedRoom.name)
-            result.joinedRoom = { name, length: room.length };
-          else if (room.length === 1) result.availableRooms.push(name);
-        }
-
-        return result;
-      },
-      { allOnlineRooms: [], availableRooms: [], joinedRoom: '' }
-    );
-  }
-
   validateRoomName() {
     if (!this.state.formInput) return 'Provide a name';
 
-    if (this.state.allOnlineRooms.includes(this.state.formInput))
+    if (this.props.rooms.all.includes(this.state.formInput))
       return 'Room name is taken';
 
     return '';
@@ -142,7 +109,7 @@ class GameRooms extends Component {
   }
 
   renderRooms() {
-    const availableRooms = this.state.availableRooms.map(room => {
+    const availableRooms = this.props.rooms.available.map(room => {
       return (
         <li
           className="list-group-item font-weight-bold d-flex justify-content-between room"
@@ -161,12 +128,12 @@ class GameRooms extends Component {
 
     return (
       <>
-        {this.state.joinedRoom.name && (
+        {this.props.rooms.joined.name && (
           <li className="list-group-item font-weight-bold d-flex justify-content-between bg-info room">
             <span className="text-white room-name">
-              {this.state.joinedRoom.name}
+              {this.props.rooms.joined.name}
             </span>
-            {this.renderRoomBtn(this.state.joinedRoom)}
+            {this.renderRoomBtn(this.props.rooms.joined)}
           </li>
         )}
         {availableRooms}
@@ -197,8 +164,8 @@ class GameRooms extends Component {
             {this.renderForm()}
           </div>
           <div className="card-body text-secondary">
-            {this.state.availableRooms.length === 0 &&
-            !this.state.joinedRoom.name ? (
+            {this.props.rooms.available.length === 0 &&
+            !this.props.rooms.joined.name ? (
               <h6 className="card-title text-info">
                 No rooms available, create one!
               </h6>
@@ -217,10 +184,11 @@ class GameRooms extends Component {
 
 const mapStateToProps = state => ({
   socket: state.socket,
-  user: state.auth.user
+  user: state.auth.user,
+  rooms: state.rooms
 });
 
 export default connect(
   mapStateToProps,
-  { addNotification }
+  { addNotification, listRooms, joinRoom }
 )(requireAuth(GameRooms));

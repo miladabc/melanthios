@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import queryString from 'query-string';
 
 import './ticTacToe.css';
 import requireAuth from '../requireAuth';
@@ -12,7 +11,6 @@ const scrollChatBoxToBottom = () => {
 
 class TicTacToe extends Component {
   state = {
-    room: queryString.parse(this.props.location.search).room,
     message: '',
     messages: [],
     board: Array(9).fill(null),
@@ -27,7 +25,7 @@ class TicTacToe extends Component {
     if (this.props.socket) {
       this.props.socket.emit(
         'whosTurn',
-        this.state.room,
+        this.props.joinedRoom,
         ({ turn, opponent }) => {
           this.setState({ turn, opponent });
         }
@@ -72,7 +70,7 @@ class TicTacToe extends Component {
 
     this.props.socket.emit(
       'turnPlayed',
-      { room: this.state.room, board },
+      { room: this.props.joinedRoom, board },
       ({ winner, line, gameFinished }) => {
         this.setState({ winner, line, gameFinished });
       }
@@ -80,7 +78,7 @@ class TicTacToe extends Component {
   }
 
   resetGame = () => {
-    this.props.socket.emit('resetGame', this.state.room);
+    this.props.socket.emit('resetGame', this.props.joinedRoom);
   };
 
   handleMessageChange = event => {
@@ -95,7 +93,7 @@ class TicTacToe extends Component {
     };
 
     this.props.socket.emit('message', {
-      room: this.state.room,
+      room: this.props.joinedRoom,
       message
     });
 
@@ -248,7 +246,9 @@ class TicTacToe extends Component {
         <div className="card details">
           <div className="card-body">
             <h4 className="text-white">Game Room:</h4>
-            <p className="details-room_name card-text h4">{this.state.room}</p>
+            <p className="details-room_name card-text h4">
+              {this.props.joinedRoom}
+            </p>
             <h5 className="text-white">Opponent:</h5>
             <p className="card-text h4">{this.state.opponent}</p>
           </div>
@@ -260,6 +260,9 @@ class TicTacToe extends Component {
   }
 }
 
-const mapStateToProps = state => ({ socket: state.socket });
+const mapStateToProps = state => ({
+  socket: state.socket,
+  joinedRoom: state.rooms.joined.name
+});
 
 export default connect(mapStateToProps)(requireAuth(TicTacToe));
