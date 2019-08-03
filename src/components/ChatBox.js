@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import './chatBox.css';
 import { scrollChatBoxToBottom } from '../utils/chatUtils';
 import { addMessage } from '../actions/chatActions';
 
