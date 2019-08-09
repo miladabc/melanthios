@@ -11,8 +11,9 @@ const listRooms = (rooms, previousJoinedRoom) => {
         result.all.push(name);
 
         if (name === previousJoinedRoom.name)
-          result.joined = { name, length: room.length };
-        else if (room.length === 1) result.available.push(name);
+          result.joined = { name, length: room.length, mode: room.mode };
+        else if (room.length === 1)
+          result.available.push({ name, mode: room.mode });
       }
 
       return result;

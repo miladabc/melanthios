@@ -4,8 +4,7 @@ export default function(
   state = {
     all: [],
     available: [],
-    joined: {},
-    mode: 'simple'
+    joined: {}
   },
   action
 ) {
@@ -15,7 +14,8 @@ export default function(
 
       return { ...state, all, available, joined };
     case JOIN_ROOM:
-      state.joined.name = action.payload;
+      state.joined.name = action.payload.name;
+      state.joined.mode = action.payload.mode;
 
       return state;
     default:

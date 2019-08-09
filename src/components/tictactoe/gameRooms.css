@@ -1,6 +1,6 @@
 .rooms {
   max-width: 35rem;
-  margin: 100px auto 0 auto;
+  margin: 50px auto 0 auto;
 }
 
 .room {
@@ -11,4 +11,21 @@
 
 .room-name {
   padding-right: 10px;
+}
+
+@media (max-width: 450px) {
+  .room {
+    flex-direction: column;
+    padding: 5px;
+  }
+
+  .room > * {
+    margin: 5px;
+  }
+
+  .room-name {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }

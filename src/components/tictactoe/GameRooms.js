@@ -10,7 +10,8 @@ import { scrollChatBoxToBottom } from '../../utils/chatUtils';
 
 class GameRooms extends Component {
   state = {
-    formInput: '',
+    roomName: '',
+    roomMode: 'simple',
     errMsg: ''
   };
 
@@ -48,7 +49,8 @@ class GameRooms extends Component {
     this.props.socket.emit(
       'joinRoom',
       {
-        roomToJoin: this.state.formInput,
+        roomToJoin: this.state.roomName,
+        roomMode: this.state.roomMode,
         joinedRoom: this.props.rooms.joined.name,
         creating: true
       },
@@ -58,20 +60,23 @@ class GameRooms extends Component {
           msg: 'Your room has been created, waiting for opponent...'
         });
 
-        this.props.joinRoom(this.state.formInput);
-        this.setState({ formInput: '' });
+        this.props.joinRoom({
+          name: this.state.roomName,
+          mode: this.state.roomMode
+        });
+        this.setState({ roomName: '' });
       }
     );
   };
 
-  joinRoom(roomToJoin) {
+  joinRoom({ name, mode }) {
     this.props.socket.emit(
       'joinRoom',
       {
-        roomToJoin,
+        roomToJoin: name,
         joinedRoom: this.props.rooms.joined.name
       },
-      () => this.props.joinRoom(roomToJoin)
+      () => this.props.joinRoom({ name, mode })
     );
   }
 
@@ -80,16 +85,16 @@ class GameRooms extends Component {
   }
 
   validateRoomName() {
-    if (!this.state.formInput) return 'Provide a name';
+    if (!this.state.roomName) return 'Provide a name';
 
-    if (this.props.rooms.all.includes(this.state.formInput))
+    if (this.props.rooms.all.includes(this.state.roomName))
       return 'Room name is taken';
 
     return '';
   }
 
-  onRoomNameChange = event => {
-    this.setState({ formInput: event.target.value, errMsg: '' });
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value, errMsg: '' });
   };
 
   renderForm() {
@@ -98,12 +103,24 @@ class GameRooms extends Component {
         <div className="form-row align-items-center justify-content-between">
           <div className="col-sm-4 my-1">
             <input
+              name="roomName"
               type="text"
               className="form-control"
               placeholder="Room Name"
-              value={this.state.formInput}
-              onChange={this.onRoomNameChange}
+              value={this.state.roomName}
+              onChange={this.handleChange}
             />
+          </div>
+          <div className="col-md-4">
+            <select
+              className="form-control"
+              name="roomMode"
+              value={this.state.roomMode}
+              onChange={this.handleChange}
+            >
+              <option value="simple">Simple</option>
+              <option value="ultimate">Ultimate</option>
+            </select>
           </div>
           <div className="col-auto my-1">
             <button type="submit" className="btn btn-info">
@@ -116,14 +133,27 @@ class GameRooms extends Component {
     );
   }
 
+  renderRoomBtn(room) {
+    if (room.length === 1) {
+      return <span className="btn btn-light">Waiting for opponent</span>;
+    } else if (room.length === 2) {
+      return (
+        <button className="btn btn-light" onClick={() => this.letsPlay()}>
+          Play
+        </button>
+      );
+    }
+  }
+
   renderRooms() {
     const availableRooms = this.props.rooms.available.map(room => {
       return (
         <li
           className="list-group-item font-weight-bold d-flex justify-content-between room"
-          key={room}
+          key={room.name}
         >
-          <span className="room-name">{room}</span>
+          <span className="room-name">{room.name}</span>
+          <span className="btn btn-warning">{room.mode}</span>
           <button
             className="btn btn-success"
             onClick={() => this.joinRoom(room)}
@@ -141,24 +171,15 @@ class GameRooms extends Component {
             <span className="text-white room-name">
               {this.props.rooms.joined.name}
             </span>
+            <span className="btn btn-warning">
+              {this.props.rooms.joined.mode}
+            </span>
             {this.renderRoomBtn(this.props.rooms.joined)}
           </li>
         )}
         {availableRooms}
       </>
     );
-  }
-
-  renderRoomBtn(room) {
-    if (room.length === 1) {
-      return <span className="btn btn-light">Waiting for opponent</span>;
-    } else if (room.length === 2) {
-      return (
-        <button className="btn btn-light" onClick={() => this.letsPlay()}>
-          Play
-        </button>
-      );
-    }
   }
 
   render() {

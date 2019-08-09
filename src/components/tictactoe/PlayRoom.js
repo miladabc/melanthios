@@ -6,6 +6,7 @@ import requireAuth from '../requireAuth';
 import { updateBoard } from '../../actions/boardActions';
 import { updateStatus } from '../../actions/statusActions';
 import SimpleBoard from './SimpleBoard';
+import UltimateBoard from './UltimateBoard';
 import ChatBox from '../ChatBox';
 
 class PlayRoom extends Component {
@@ -13,7 +14,7 @@ class PlayRoom extends Component {
     if (this.props.socket) {
       this.props.socket.emit(
         'whosTurn',
-        this.props.joinedRoom,
+        this.props.room.name,
         ({ turn, opponent }) => {
           this.props.updateStatus({ turn, opponent });
         }
@@ -23,7 +24,7 @@ class PlayRoom extends Component {
         'turnPlayed',
         ({ board, status: { winner, line, gameFinished } }) => {
           this.props.updateStatus({ turn: true, winner, line, gameFinished });
-          this.props.updateBoard(this.props.gameMode, board);
+          this.props.updateBoard(this.props.room.mode, board);
         }
       );
 
@@ -38,7 +39,7 @@ class PlayRoom extends Component {
           line: [],
           gameFinished: false
         });
-        this.props.updateBoard(this.props.gameMode, Array(9).fill(null));
+        this.props.updateBoard(this.props.room.mode, Array(9).fill(null));
       });
     }
   }
@@ -48,15 +49,23 @@ class PlayRoom extends Component {
       <div className="play-room">
         <div className="card details">
           <div className="card-body">
-            <h4 className="text-white">Game Room:</h4>
+            <h4 className="text-white">Room:</h4>
             <p className="details-room_name card-text h4">
-              {this.props.joinedRoom}
+              {this.props.room.name}
+            </p>
+            <h5 className="text-white">Mode:</h5>
+            <p className="details-room_name card-text h4">
+              {this.props.room.mode}
             </p>
             <h5 className="text-white">Opponent:</h5>
             <p className="card-text h4">{this.props.status.opponent}</p>
           </div>
         </div>
-        <SimpleBoard />
+        {this.props.room.mode === 'simple' ? (
+          <SimpleBoard />
+        ) : (
+          <UltimateBoard />
+        )}
         <ChatBox />
       </div>
     );
@@ -65,8 +74,7 @@ class PlayRoom extends Component {
 
 const mapStateToProps = state => ({
   socket: state.socket,
-  joinedRoom: state.rooms.joined.name,
-  gameMode: state.rooms.mode,
+  room: state.rooms.joined,
   status: state.status
 });
 
