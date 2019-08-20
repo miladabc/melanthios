@@ -64,12 +64,12 @@ class SimpleBoard extends Component {
 
       row.push(
         <div
-          className={`game-cell ${gameCellClassNames}`}
+          className={`s-game-cell ${gameCellClassNames}`}
           onClick={onClick}
           style={{ backgroundColor }}
           key={cell}
         >
-          <span className="game-cell-label center-align">
+          <span className="s-game-cell-label center-align">
             {this.props.board.simple[cell] && sign}
           </span>
         </div>
@@ -104,7 +104,7 @@ class SimpleBoard extends Component {
     }
 
     return (
-      <div className="game-grid center-align tall-container-grow">
+      <div className="s-game-grid center-align tall-container-grow">
         <span className="turn text-light">{status}</span>
         {rows}
         {this.props.status.gameFinished ? (
@@ -121,7 +121,7 @@ const mapStateToProps = state => ({
   socket: state.socket,
   user: state.auth.user,
   joinedRoom: state.rooms.joined.name,
-  gameMode: state.rooms.mode,
+  gameMode: state.rooms.joined.mode,
   board: state.board,
   status: state.status
 });

@@ -11,14 +11,14 @@
   text-align: center;
 }
 
-.game-grid {
+.s-game-grid {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.game-grid button {
+.s-game-grid button {
   margin-top: 15px;
 }
 
@@ -28,7 +28,7 @@
   flex-direction: row;
 }
 
-.game-cell {
+.s-game-cell {
   width: 25vw;
   height: 25vw;
   max-width: 100px;
@@ -43,9 +43,9 @@
   border-radius: 8px;
 }
 
-.game-cell-label {
+.s-game-cell-label {
   width: 100%;
-  font-size: 1.7em;
+  font-size: 34px;
   font-weight: 600;
   color: #757575;
   position: absolute;
@@ -66,4 +66,10 @@
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
+}
+
+@media (min-width: 1145px) {
+  .game-cell-label {
+    font-size: 34px;
+  }
 }
