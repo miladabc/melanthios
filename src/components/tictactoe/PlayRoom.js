@@ -28,8 +28,7 @@ class PlayRoom extends Component {
       socket.on(
         'turnPlayed',
         ({
-          board,
-          status: { winner, line, gameFinished },
+          status: { board, winner, line, gameFinished },
           lastMovePosition
         }) => {
           updateStatus({

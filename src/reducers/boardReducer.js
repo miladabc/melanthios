@@ -1,14 +1,21 @@
 import { UPDATE_BOARD } from '../actions/types';
 
-const ultimate = [];
+const simple = {
+  smallBoard: Array(9).fill(null),
+  marksNum: 0
+};
 
-for (let i = 0; i < 9; i++) {
-  ultimate.push(Array(9).fill(null));
-}
+const ultimate = {
+  largeBoard: Array.from({ length: 9 }, () => ({
+    smallBoard: Array(9).fill(null),
+    marksNum: 0
+  })),
+  boardsWinner: Array(9).fill(null)
+};
 
 export default function(
   state = {
-    simple: Array(9).fill(null),
+    simple,
     ultimate
   },
   action

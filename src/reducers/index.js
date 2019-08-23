@@ -16,6 +16,6 @@ export default combineReducers({
   socket: socketReducer,
   rooms: roomsReducer,
   messages: messagesReducer,
-  board: boardReducer,
+  boards: boardReducer,
   status: statusReducer
 });

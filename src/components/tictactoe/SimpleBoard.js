@@ -23,15 +23,16 @@ class SimpleBoard extends Component {
       joinedRoom
     } = this.props;
 
-    const board = [...simpleBoard];
-    board[cellNum] = user.username;
+    const simple = { ...simpleBoard };
+    simple.smallBoard[cellNum] = user.username;
+    simple.marksNum++;
 
     updateStatus({ turn: false });
-    updateBoard(joinedRoom.mode, board);
+    updateBoard(joinedRoom.mode, simple);
 
     socket.emit(
       'turnPlayed',
-      { room: joinedRoom, board },
+      { room: joinedRoom, board: simple },
       ({ winner, line, gameFinished }) => {
         updateStatus({ winner, line, gameFinished });
       }
@@ -48,7 +49,7 @@ class SimpleBoard extends Component {
 
     for (let i = 0; i < 3; i++) {
       const cell = i + j;
-      const cellMarkedBy = simpleBoard[cell];
+      const cellMarkedBy = simpleBoard.smallBoard[cell];
       const mark = cellMarkedBy === user.username ? '╳' : '◯';
       let isCellClickable = '';
       let onClick = null;
@@ -136,7 +137,7 @@ const mapStateToProps = state => ({
   socket: state.socket,
   user: state.auth.user,
   joinedRoom: state.rooms.joined,
-  simpleBoard: state.board.simple,
+  simpleBoard: state.boards.simple,
   status: state.status
 });
 

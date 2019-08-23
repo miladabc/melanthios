@@ -17,17 +17,19 @@ class UltimateBoard extends Component {
       socket
     } = this.props;
 
-    const board = [...ultimateBoard];
-    board[boardId][cellId] = user.username;
+    const ultimate = { ...ultimateBoard };
+    ultimate.largeBoard[boardId].smallBoard[cellId] = user.username;
+    ultimate.largeBoard[boardId].marksNum++;
 
     updateStatus({ turn: false });
-    updateBoard(joinedRoom.mode, board);
+    updateBoard(joinedRoom.mode, ultimate);
 
     socket.emit(
       'turnPlayed',
-      { room: joinedRoom, board, lastMovePosition: cellId },
-      ({ winner, line, gameFinished }) => {
+      { room: joinedRoom, board: ultimate, lastMovePosition: cellId },
+      ({ board, winner, line, gameFinished }) => {
         updateStatus({ winner, line, gameFinished });
+        updateBoard(joinedRoom.mode, board);
       }
     );
   }
@@ -35,7 +37,7 @@ class UltimateBoard extends Component {
   renderCell(boardId, cellId) {
     const { ultimateBoard, user, status } = this.props;
 
-    const cellMarkedBy = ultimateBoard[boardId][cellId];
+    const cellMarkedBy = ultimateBoard.largeBoard[boardId].smallBoard[cellId];
     const mark = cellMarkedBy === user.username ? '╳' : '◯';
     let isCellClickable = '';
     let onClick = null;
@@ -138,7 +140,7 @@ const mapStateToProps = state => ({
   socket: state.socket,
   user: state.auth.user,
   joinedRoom: state.rooms.joined,
-  ultimateBoard: state.board.ultimate,
+  ultimateBoard: state.boards.ultimate,
   status: state.status
 });
 
