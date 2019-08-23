@@ -1,15 +1,5 @@
-.center-align {
-  text-align: center;
-}
-
 .u-game-grid {
   padding: 4px;
-}
-
-.game-row {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
 }
 
 .game-row > .u-game-grid:nth-child(-n + 2) {

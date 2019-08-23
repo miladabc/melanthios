@@ -1,0 +1,24 @@
+.center-align {
+  text-align: center;
+}
+
+.game-cell-clickable {
+  transition: box-shadow 0.25s;
+  cursor: pointer;
+}
+
+.game-cell-clickable:hover,
+.game-cell-clickable:active {
+  border: 3px groove #ffce00;
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.disabled-board > div {
+  opacity: 0.4;
+}
+
+.game-row {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}

@@ -6,7 +6,8 @@ export default function(
     opponent: '',
     winner: '',
     line: [],
-    gameFinished: false
+    gameFinished: false,
+    lastMovePosition: -1
   },
   action
 ) {

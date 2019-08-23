@@ -22,8 +22,18 @@ class PlayRoom extends Component {
 
       this.props.socket.on(
         'turnPlayed',
-        ({ board, status: { winner, line, gameFinished } }) => {
-          this.props.updateStatus({ turn: true, winner, line, gameFinished });
+        ({
+          board,
+          status: { winner, line, gameFinished },
+          lastMovePosition
+        }) => {
+          this.props.updateStatus({
+            turn: true,
+            winner,
+            line,
+            gameFinished,
+            lastMovePosition
+          });
           this.props.updateBoard(this.props.room.mode, board);
         }
       );

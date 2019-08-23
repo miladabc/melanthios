@@ -5,8 +5,8 @@ const CLOSE_SOCKET = 'close_socket';
 const LIST_ROOMS = 'list_rooms';
 const JOIN_ROOM = 'join_room';
 const ADD_MESSAGE = 'add_message';
-const UPDATE_SIMPLE_BOARD = 'update_simple_board';
 const UPDATE_STATUS = 'update_status';
+const UPDATE_BOARD = 'update_board';
 
 export {
   AUTH_USER,
@@ -16,6 +16,6 @@ export {
   LIST_ROOMS,
   JOIN_ROOM,
   ADD_MESSAGE,
-  UPDATE_SIMPLE_BOARD,
-  UPDATE_STATUS
+  UPDATE_STATUS,
+  UPDATE_BOARD
 };

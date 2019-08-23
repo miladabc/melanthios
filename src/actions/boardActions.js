@@ -1,8 +1,7 @@
-import { UPDATE_SIMPLE_BOARD } from './types';
+import { UPDATE_BOARD } from './types';
 
 const updateBoard = (gameMode, board) => {
-  if (gameMode === 'simple')
-    return { type: UPDATE_SIMPLE_BOARD, payload: board };
+  return { type: UPDATE_BOARD, payload: board, gameMode };
 };
 
 export { updateBoard };

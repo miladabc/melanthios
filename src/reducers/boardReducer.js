@@ -1,14 +1,21 @@
-import { UPDATE_SIMPLE_BOARD } from '../actions/types';
+import { UPDATE_BOARD } from '../actions/types';
+
+let ultimate = [];
+
+for (let i = 0; i < 9; i++) {
+  ultimate.push(Array(9).fill(null));
+}
 
 export default function(
   state = {
-    simple: Array(9).fill(null)
+    simple: Array(9).fill(null),
+    ultimate
   },
   action
 ) {
   switch (action.type) {
-    case UPDATE_SIMPLE_BOARD:
-      return { ...state, simple: action.payload };
+    case UPDATE_BOARD:
+      return { ...state, [action.gameMode]: action.payload };
     default:
       return state;
   }
