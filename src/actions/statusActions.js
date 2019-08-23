@@ -4,4 +4,4 @@ const updateStatus = payload => {
   return { type: UPDATE_STATUS, payload };
 };
 
-export { updateStatus };
+export default { updateStatus };

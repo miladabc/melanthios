@@ -3,31 +3,44 @@ import { connect } from 'react-redux';
 
 import './board.css';
 import './simpleBoard.css';
-import { updateBoard } from '../../actions/boardActions';
-import { updateStatus } from '../../actions/statusActions';
+import boardActions from '../../actions/boardActions';
+import statusActions from '../../actions/statusActions';
 
 class SimpleBoard extends Component {
+  resetGame = () => {
+    const { socket, joinedRoom } = this.props;
+
+    socket.emit('resetGame', joinedRoom.name);
+  };
+
   handleCellClick(cellNum) {
-    const board = [...this.props.board];
-    board[cellNum] = this.props.user.username;
+    const {
+      simpleBoard,
+      user,
+      updateStatus,
+      updateBoard,
+      socket,
+      joinedRoom
+    } = this.props;
 
-    this.props.updateStatus({ turn: false });
-    this.props.updateBoard(this.props.joinedRoom.mode, board);
+    const board = [...simpleBoard];
+    board[cellNum] = user.username;
 
-    this.props.socket.emit(
+    updateStatus({ turn: false });
+    updateBoard(joinedRoom.mode, board);
+
+    socket.emit(
       'turnPlayed',
-      { room: this.props.joinedRoom, board },
+      { room: joinedRoom, board },
       ({ winner, line, gameFinished }) => {
-        this.props.updateStatus({ winner, line, gameFinished });
+        updateStatus({ winner, line, gameFinished });
       }
     );
   }
 
-  resetGame = () => {
-    this.props.socket.emit('resetGame', this.props.joinedRoom.name);
-  };
-
   renderRow(rowNum) {
+    const { simpleBoard, user, status } = this.props;
+
     const row = [];
     let j = 0;
     if (rowNum === 1) j = 3;
@@ -35,28 +48,20 @@ class SimpleBoard extends Component {
 
     for (let i = 0; i < 3; i++) {
       const cell = i + j;
-      const cellMarkedBy = this.props.board[cell];
-      const mark = cellMarkedBy === this.props.user.username ? '╳' : '◯';
+      const cellMarkedBy = simpleBoard[cell];
+      const mark = cellMarkedBy === user.username ? '╳' : '◯';
       let isCellClickable = '';
       let onClick = null;
       let backgroundColor;
 
-      if (
-        this.props.status.turn &&
-        !this.props.status.gameFinished &&
-        !cellMarkedBy
-      ) {
+      if (status.turn && !status.gameFinished && !cellMarkedBy) {
         isCellClickable = 'game-cell-clickable';
 
         onClick = () => this.handleCellClick(cell);
       }
 
-      if (
-        this.props.status.gameFinished &&
-        this.props.status.line.includes(cell)
-      ) {
-        if (this.props.status.winner === this.props.user.username)
-          backgroundColor = '#70db70';
+      if (status.gameFinished && status.line.includes(cell)) {
+        if (status.winner === user.username) backgroundColor = '#70db70';
         else backgroundColor = '#ff8a80';
       }
 
@@ -78,23 +83,25 @@ class SimpleBoard extends Component {
   }
 
   render() {
+    const { status, user } = this.props;
+
     let isBoardDisabled = '';
     const rows = [];
-    let status = this.props.status.turn ? 'Your Turn' : 'Opponent Turn';
+    let gameStatus = status.turn ? 'Your Turn' : 'Opponent Turn';
 
-    if (!this.props.status.turn && !this.props.status.gameFinished)
+    if (!status.turn && !status.gameFinished)
       isBoardDisabled = 'disabled-board';
 
-    if (this.props.status.gameFinished)
-      switch (this.props.status.winner) {
+    if (status.gameFinished)
+      switch (status.winner) {
         case 'DRAW':
-          status = 'DRAW';
+          gameStatus = 'DRAW';
           break;
-        case this.props.user.username:
-          status = 'You won!';
+        case user.username:
+          gameStatus = 'You won!';
           break;
         default:
-          status = 'You lose!';
+          gameStatus = 'You lose!';
       }
 
     for (let i = 0; i < 3; i++) {
@@ -109,10 +116,14 @@ class SimpleBoard extends Component {
       <div
         className={`s-game-grid center-align tall-container-grow ${isBoardDisabled}`}
       >
-        <span className="turn text-light">{status}</span>
+        <span className="turn text-light">{gameStatus}</span>
         {rows}
-        {this.props.status.gameFinished ? (
-          <button className="btn btn-danger" onClick={this.resetGame}>
+        {status.gameFinished ? (
+          <button
+            className="btn btn-danger"
+            type="button"
+            onClick={this.resetGame}
+          >
             Play again
           </button>
         ) : null}
@@ -125,11 +136,16 @@ const mapStateToProps = state => ({
   socket: state.socket,
   user: state.auth.user,
   joinedRoom: state.rooms.joined,
-  board: state.board.simple,
+  simpleBoard: state.board.simple,
   status: state.status
 });
 
+const mapDispatchToProps = {
+  updateBoard: boardActions.updateBoard,
+  updateStatus: statusActions.updateStatus
+};
+
 export default connect(
   mapStateToProps,
-  { updateBoard, updateStatus }
+  mapDispatchToProps
 )(SimpleBoard);

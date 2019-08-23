@@ -3,38 +3,48 @@ import { connect } from 'react-redux';
 
 import './board.css';
 import './ultimateBoard.css';
-import { updateBoard } from '../../actions/boardActions';
-import { updateStatus } from '../../actions/statusActions';
+import boardActions from '../../actions/boardActions';
+import statusActions from '../../actions/statusActions';
 
 class UltimateBoard extends Component {
   handleCellClick(boardId, cellId) {
-    const board = [...this.props.board];
-    board[boardId][cellId] = this.props.user.username;
+    const {
+      ultimateBoard,
+      user,
+      joinedRoom,
+      updateStatus,
+      updateBoard,
+      socket
+    } = this.props;
 
-    this.props.updateStatus({ turn: false });
-    this.props.updateBoard(this.props.joinedRoom.mode, board);
+    const board = [...ultimateBoard];
+    board[boardId][cellId] = user.username;
 
-    this.props.socket.emit(
+    updateStatus({ turn: false });
+    updateBoard(joinedRoom.mode, board);
+
+    socket.emit(
       'turnPlayed',
-      { room: this.props.joinedRoom, board, lastMovePosition: cellId },
+      { room: joinedRoom, board, lastMovePosition: cellId },
       ({ winner, line, gameFinished }) => {
-        this.props.updateStatus({ winner, line, gameFinished });
+        updateStatus({ winner, line, gameFinished });
       }
     );
   }
 
   renderCell(boardId, cellId) {
-    const cellMarkedBy = this.props.board[boardId][cellId];
-    const mark = cellMarkedBy === this.props.user.username ? '╳' : '◯';
+    const { ultimateBoard, user, status } = this.props;
+
+    const cellMarkedBy = ultimateBoard[boardId][cellId];
+    const mark = cellMarkedBy === user.username ? '╳' : '◯';
     let isCellClickable = '';
     let onClick = null;
 
     if (
-      !this.props.status.gameFinished &&
-      this.props.status.turn &&
+      !status.gameFinished &&
+      status.turn &&
       !cellMarkedBy &&
-      (this.props.status.lastMovePosition === -1 ||
-        boardId === this.props.status.lastMovePosition)
+      (status.lastMovePosition === -1 || boardId === status.lastMovePosition)
     ) {
       isCellClickable = 'game-cell-clickable';
       onClick = () => this.handleCellClick(boardId, cellId);
@@ -70,14 +80,15 @@ class UltimateBoard extends Component {
   }
 
   renderSmallBoard(boardId) {
+    const { status } = this.props;
+
     let isBoardDisabled = '';
     const cellRows = [];
 
     if (
-      !this.props.status.gameFinished &&
-      (!this.props.status.turn ||
-        (this.props.status.lastMovePosition !== -1 &&
-          this.props.status.lastMovePosition !== boardId))
+      !status.gameFinished &&
+      (!status.turn ||
+        (status.lastMovePosition !== -1 && status.lastMovePosition !== boardId))
     )
       isBoardDisabled = 'disabled-board';
 
@@ -127,11 +138,16 @@ const mapStateToProps = state => ({
   socket: state.socket,
   user: state.auth.user,
   joinedRoom: state.rooms.joined,
-  board: state.board.ultimate,
+  ultimateBoard: state.board.ultimate,
   status: state.status
 });
 
+const mapDispatchToProps = {
+  updateBoard: boardActions.updateBoard,
+  updateStatus: statusActions.updateStatus
+};
+
 export default connect(
   mapStateToProps,
-  { updateBoard, updateStatus }
+  mapDispatchToProps
 )(UltimateBoard);

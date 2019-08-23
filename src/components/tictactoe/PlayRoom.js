@@ -3,79 +3,77 @@ import { connect } from 'react-redux';
 
 import './playRoom.css';
 import requireAuth from '../requireAuth';
-import { updateBoard } from '../../actions/boardActions';
-import { updateStatus } from '../../actions/statusActions';
+import boardActions from '../../actions/boardActions';
+import statusActions from '../../actions/statusActions';
 import SimpleBoard from './SimpleBoard';
 import UltimateBoard from './UltimateBoard';
 import ChatBox from '../ChatBox';
 
 class PlayRoom extends Component {
   componentDidMount() {
-    if (this.props.socket) {
-      this.props.socket.emit(
-        'whosTurn',
-        this.props.room.name,
-        ({ turn, opponent }) => {
-          this.props.updateStatus({ turn, opponent });
-        }
-      );
+    const {
+      socket,
+      room,
+      updateStatus,
+      updateBoard,
+      user,
+      status
+    } = this.props;
 
-      this.props.socket.on(
+    if (socket) {
+      socket.emit('whosTurn', room.name, ({ turn, opponent }) => {
+        updateStatus({ turn, opponent });
+      });
+
+      socket.on(
         'turnPlayed',
         ({
           board,
           status: { winner, line, gameFinished },
           lastMovePosition
         }) => {
-          this.props.updateStatus({
+          updateStatus({
             turn: true,
             winner,
             line,
             gameFinished,
             lastMovePosition
           });
-          this.props.updateBoard(this.props.room.mode, board);
+          updateBoard(room.mode, board);
         }
       );
 
-      this.props.socket.on('resetGame', ({ playerTurn }) => {
-        let turn = this.props.status.winner === this.props.user.username;
-        if (this.props.status.winner === 'DRAW')
-          turn = this.props.socket.id === playerTurn;
+      socket.on('resetGame', ({ playerTurn }) => {
+        let turn = status.winner === user.username;
+        if (status.winner === 'DRAW') turn = socket.id === playerTurn;
 
-        this.props.updateStatus({
+        updateStatus({
           turn,
           winner: '',
           line: [],
           gameFinished: false
         });
-        this.props.updateBoard(this.props.room.mode, Array(9).fill(null));
+        updateBoard(room.mode, Array(9).fill(null));
       });
     }
   }
 
   render() {
+    const { room, status } = this.props;
+
     return (
       <div className="play-room">
         <div className="card details">
           <div className="card-body">
             <h4 className="text-white">Room:</h4>
-            <p className="details-room_name card-text h4">
-              {this.props.room.name}
-            </p>
+            <p className="details-room_name card-text h4">{room.name}</p>
             <h5 className="text-white">Mode:</h5>
-            <p className="details-room_name card-text h4">
-              {this.props.room.mode}
-            </p>
+            <p className="details-room_name card-text h4">{room.mode}</p>
             <h5 className="text-white">Opponent:</h5>
-            <p className="card-text h4">{this.props.status.opponent}</p>
+            <p className="card-text h4">{status.opponent}</p>
           </div>
         </div>
-        {this.props.room.mode === 'simple' ? (
-          <SimpleBoard />
-        ) : (
-          <UltimateBoard />
-        )}
+        {room.mode === 'simple' ? <SimpleBoard /> : <UltimateBoard />}
         <ChatBox />
       </div>
     );
@@ -88,7 +86,12 @@ const mapStateToProps = state => ({
   status: state.status
 });
 
+const mapDispatchToProps = {
+  updateBoard: boardActions.updateBoard,
+  updateStatus: statusActions.updateStatus
+};
+
 export default connect(
   mapStateToProps,
-  { updateBoard, updateStatus }
+  mapDispatchToProps
 )(requireAuth(PlayRoom));

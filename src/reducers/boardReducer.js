@@ -1,6 +1,6 @@
 import { UPDATE_BOARD } from '../actions/types';
 
-let ultimate = [];
+const ultimate = [];
 
 for (let i = 0; i < 9; i++) {
   ultimate.push(Array(9).fill(null));
