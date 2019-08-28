@@ -22,3 +22,19 @@
   display: flex;
   flex-direction: row;
 }
+
+.win-color {
+  color: #70db70 !important;
+}
+
+.lose-color {
+  color: #ff8a80 !important;
+}
+
+.win-background-color {
+  background-color: #70db70;
+}
+
+.lose-background-color {
+  background-color: #ff8a80;
+}

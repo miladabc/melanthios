@@ -41,15 +41,29 @@ class UltimateBoard extends Component {
     const mark = cellMarkedBy === user.username ? '╳' : '◯';
     let isCellClickable = '';
     let onClick = null;
+    let fontColor = '';
 
     if (
       !status.gameFinished &&
       status.turn &&
       !cellMarkedBy &&
-      (status.lastMovePosition === -1 || boardId === status.lastMovePosition)
+      !ultimateBoard.wonBoards[boardId].user &&
+      (status.lastMovePosition === -1 ||
+        boardId === status.lastMovePosition ||
+        ultimateBoard.wonBoards[status.lastMovePosition].user)
     ) {
       isCellClickable = 'game-cell-clickable';
       onClick = () => this.handleCellClick(boardId, cellId);
+    }
+
+    if (
+      ultimateBoard.wonBoards[boardId].user &&
+      ultimateBoard.wonBoards[boardId].row.includes(cellId)
+    ) {
+      fontColor =
+        ultimateBoard.wonBoards[boardId].user === user.username
+          ? 'win-color'
+          : 'lose-color';
     }
 
     return (
@@ -58,7 +72,7 @@ class UltimateBoard extends Component {
         onClick={onClick}
         key={cellId}
       >
-        <span className="u-game-cell-label center-align">
+        <span className={`u-game-cell-label center-align ${fontColor}`}>
           {cellMarkedBy && mark}
         </span>
       </div>
@@ -82,23 +96,34 @@ class UltimateBoard extends Component {
   }
 
   renderSmallBoard(boardId) {
-    const { status } = this.props;
+    const { status, user, ultimateBoard } = this.props;
 
-    let isBoardDisabled = '';
+    const boardClassNames = [];
     const cellRows = [];
 
     if (
       !status.gameFinished &&
       (!status.turn ||
-        (status.lastMovePosition !== -1 && status.lastMovePosition !== boardId))
+        ultimateBoard.wonBoards[boardId].user ||
+        (status.lastMovePosition !== -1 &&
+          status.lastMovePosition !== boardId &&
+          !ultimateBoard.wonBoards[status.lastMovePosition].user))
     )
-      isBoardDisabled = 'disabled-board';
+      boardClassNames.push('disabled-board');
+
+    if (ultimateBoard.wonBoards[boardId].user) {
+      boardClassNames.push(
+        ultimateBoard.wonBoards[boardId].user === user.username
+          ? 'win-background-color'
+          : 'lose-background-color'
+      );
+    }
 
     for (let i = 0; i < 3; i++) cellRows.push(this.renderCellsRow(boardId, i));
 
     return (
       <div
-        className={`u-game-grid center-align ${isBoardDisabled}`}
+        className={`u-game-grid center-align ${boardClassNames.join(' ')}`}
         key={boardId}
       >
         {cellRows}

@@ -10,7 +10,10 @@ const ultimate = {
     smallBoard: Array(9).fill(null),
     marksNum: 0
   })),
-  boardsWinner: Array(9).fill(null)
+  wonBoards: Array.from({ length: 9 }, () => ({
+    user: null,
+    row: []
+  }))
 };
 
 export default function(
