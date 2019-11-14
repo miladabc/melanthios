@@ -8,6 +8,8 @@ https://github.com/Miladdarren/aristaeus
 Play now:
 [Multi-XO](https://melanthios.herokuapp.com)
 
+![Demo](demo.png)
+
 ## Stacks
 
 - **React v16**
