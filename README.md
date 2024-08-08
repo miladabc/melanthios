@@ -5,9 +5,6 @@ A real-time two player XO game with chat functionality
 Back-end repository:
 https://github.com/Miladdarren/aristaeus
 
-Play now:
-[Multi-XO](https://melanthios.herokuapp.com)
-
 ![Demo](demo.png)
 
 ## Stacks
